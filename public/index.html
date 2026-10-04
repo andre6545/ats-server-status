@@ -14,6 +14,10 @@
       --accent-offline: #ef4444;
       --accent-blue: #38bdf8;
       --border-color: #334155;
+      
+      /* Colores para Comunidad */
+      --discord-color: #5865f2;
+      --whatsapp-color: #25d366;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, -apple-system, sans-serif; }
@@ -72,6 +76,29 @@
     .btn-copy { background-color: var(--accent-blue); color: #0f172a; border: none; border-radius: 8px; padding: 10px 16px; font-weight: 600; cursor: pointer; }
     .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
     .info-value { font-size: 1rem; font-weight: 600; }
+
+    /* ESTILOS DE BOTONES DE COMUNIDAD */
+    .community-buttons { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .btn-community {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 12px;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 0.875rem;
+      text-decoration: none;
+      color: #ffffff;
+      transition: transform 0.2s, opacity 0.2s;
+    }
+    .btn-community:hover {
+      transform: translateY(-2px);
+      opacity: 0.95;
+    }
+    .btn-discord { background-color: var(--discord-color); }
+    .btn-map { background-color: var(--whatsapp-color); }
+
     .footer { padding: 14px; background-color: rgba(15, 23, 42, 0.4); border-top: 1px solid var(--border-color); text-align: center; font-size: 0.75rem; color: var(--text-muted); }
   </style>
 </head>
@@ -133,6 +160,16 @@
           <div class="card-label">Tiempo Activo</div>
           <div class="info-value" id="api-uptime">-</div>
         </div>
+      </div>
+
+      <!-- Botones de Comunidad y Mapa -->
+      <div class="community-buttons">
+        <a href="https://discord.gg/cTk2V9feYF" target="_blank" rel="noopener noreferrer" class="btn-community btn-discord">
+          💬 Discord Oficial
+        </a>
+        <a href="https://wa.link/k18cir" target="_blank" rel="noopener noreferrer" class="btn-community btn-map">
+          🗺️ Comprar Mapa
+        </a>
       </div>
     </div>
 
