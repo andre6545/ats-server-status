@@ -3,7 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ECUASERVER +593 | Estado del Servidor</title>
+  <title>ECUASERVER +593 | Estado y Telemetría del Servidor</title>
+  
+  <!-- Leaflet CSS para el Mapa -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+
   <style>
     :root {
       --bg-color: #0f172a;
@@ -13,16 +17,16 @@
       --accent-online: #10b981;
       --accent-offline: #ef4444;
       --accent-blue: #38bdf8;
+      --accent-warning: #f59e0b;
       --border-color: #334155;
       
-      /* Colores para Comunidad */
       --discord-color: #5865f2;
       --whatsapp-color: #25d366;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, -apple-system, sans-serif; }
     body { background-color: var(--bg-color); color: var(--text-main); min-height: 100vh; display: flex; justify-content: center; align-items: center; padding: 20px; }
-    .dashboard { width: 100%; max-width: 550px; background-color: var(--card-bg); border-radius: 16px; border: 1px solid var(--border-color); box-shadow: 0 20px 25px -5px rgba(0,0,0,0.5); overflow: hidden; }
+    .dashboard { width: 100%; max-width: 600px; background-color: var(--card-bg); border-radius: 16px; border: 1px solid var(--border-color); box-shadow: 0 20px 25px -5px rgba(0,0,0,0.5); overflow: hidden; }
     .header { padding: 24px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; }
     .header-title h1 { font-size: 1.4rem; font-weight: 700; color: var(--text-main); }
     .header-title p { font-size: 0.85rem; color: var(--text-muted); margin-top: 4px; }
@@ -32,10 +36,14 @@
     .content { padding: 24px; display: flex; flex-direction: column; gap: 16px; }
     .card { background-color: rgba(15, 23, 42, 0.6); border: 1px solid var(--border-color); border-radius: 12px; padding: 16px; }
     .card-label { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted); margin-bottom: 8px; }
-    .slots-header { display: flex; justify-content: space-between; margin-bottom: 8px; font-weight: 600; font-size: 0.9rem; }
-    .progress-bar-bg { width: 100%; height: 10px; background-color: var(--border-color); border-radius: 5px; overflow: hidden; }
-    .progress-bar-fill { height: 100%; width: 0%; background-color: var(--accent-blue); transition: width 0.4s ease; }
     
+    /* ESTILOS DEL MAPA Y TELEMETRÍA */
+    #map { width: 100%; height: 260px; border-radius: 8px; border: 1px solid var(--border-color); z-index: 1; }
+    .telemetry-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-top: 10px; }
+    .telemetry-box { background: var(--bg-color); border: 1px solid var(--border-color); padding: 8px; border-radius: 8px; text-align: center; }
+    .telemetry-val { font-size: 1.1rem; font-weight: bold; color: var(--accent-blue); }
+    .telemetry-lbl { font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; }
+
     /* BOTÓN DIRECTO DE STEAM */
     .btn-steam-join {
       display: flex;
@@ -53,20 +61,14 @@
       box-shadow: 0 4px 14px rgba(0, 114, 255, 0.3);
       transition: transform 0.2s, box-shadow 0.2s, opacity 0.2s;
     }
-    .btn-steam-join:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 20px rgba(0, 114, 255, 0.4);
-    }
-    .btn-steam-join.disabled {
-      background: var(--border-color);
-      color: var(--text-muted);
-      cursor: not-allowed;
-      pointer-events: none;
-      box-shadow: none;
-    }
+    .btn-steam-join:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0, 114, 255, 0.4); }
+    .btn-steam-join.disabled { background: var(--border-color); color: var(--text-muted); cursor: not-allowed; pointer-events: none; box-shadow: none; }
 
     /* LISTA DE JUGADORES */
-    .players-container { display: flex; flex-direction: column; gap: 8px; max-height: 180px; overflow-y: auto; margin-top: 6px; }
+    .slots-header { display: flex; justify-content: space-between; margin-bottom: 8px; font-weight: 600; font-size: 0.9rem; }
+    .progress-bar-bg { width: 100%; height: 10px; background-color: var(--border-color); border-radius: 5px; overflow: hidden; }
+    .progress-bar-fill { height: 100%; width: 0%; background-color: var(--accent-blue); transition: width 0.4s ease; }
+    .players-container { display: flex; flex-direction: column; gap: 8px; max-height: 160px; overflow-y: auto; margin-top: 6px; }
     .player-item { display: flex; align-items: center; gap: 10px; padding: 8px 12px; background-color: var(--bg-color); border: 1px solid var(--border-color); border-radius: 8px; font-size: 0.875rem; }
     .player-avatar { width: 24px; height: 24px; border-radius: 50%; background-color: var(--accent-blue); display: flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: bold; color: #0f172a; }
     .player-empty { font-size: 0.85rem; color: var(--text-muted); font-style: italic; padding: 6px 0; }
@@ -77,25 +79,10 @@
     .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
     .info-value { font-size: 1rem; font-weight: 600; }
 
-    /* ESTILOS DE BOTONES DE COMUNIDAD */
+    /* BOTONES DE COMUNIDAD */
     .community-buttons { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-    .btn-community {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      padding: 12px;
-      border-radius: 8px;
-      font-weight: 600;
-      font-size: 0.875rem;
-      text-decoration: none;
-      color: #ffffff;
-      transition: transform 0.2s, opacity 0.2s;
-    }
-    .btn-community:hover {
-      transform: translateY(-2px);
-      opacity: 0.95;
-    }
+    .btn-community { display: flex; align-items: center; justify-content: center; gap: 8px; padding: 12px; border-radius: 8px; font-weight: 600; font-size: 0.875rem; text-decoration: none; color: #ffffff; transition: transform 0.2s, opacity 0.2s; }
+    .btn-community:hover { transform: translateY(-2px); opacity: 0.95; }
     .btn-discord { background-color: var(--discord-color); }
     .btn-map { background-color: var(--whatsapp-color); }
 
@@ -117,6 +104,32 @@
     </div>
 
     <div class="content">
+      <!-- MAPA Y TELEMETRÍA EN VIVO -->
+      <div class="card">
+        <div class="card-label">📍 Mapa de Telemetría en Vivo</div>
+        <div id="map"></div>
+
+        <!-- Telemetría en tiempo real -->
+        <div class="telemetry-grid">
+          <div class="telemetry-box">
+            <div class="telemetry-val" id="tele-speed">0 <span style="font-size:0.7rem">km/h</span></div>
+            <div class="telemetry-lbl">Velocidad</div>
+          </div>
+          <div class="telemetry-box">
+            <div class="telemetry-val" id="tele-gear">N</div>
+            <div class="telemetry-lbl">Marcha</div>
+          </div>
+          <div class="telemetry-box">
+            <div class="telemetry-val" id="tele-rpm">0</div>
+            <div class="telemetry-lbl">RPM</div>
+          </div>
+          <div class="telemetry-box">
+            <div class="telemetry-val" id="tele-fuel">100%</div>
+            <div class="telemetry-lbl">Diesel</div>
+          </div>
+        </div>
+      </div>
+
       <!-- Botón de Conexión Directa Steam -->
       <a href="steam://run/270880//+connect%2085568392936670275" id="steam-join-btn" class="btn-steam-join">
         🚛 Unirse al Servidor (Steam)
@@ -174,17 +187,29 @@
     </div>
 
     <div class="footer">
-      Actualizado automáticamente cada 10 segundos
+      Actualizado automáticamente en tiempo real
     </div>
   </div>
+
+  <!-- Leaflet JS para renderizar el mapa -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
   <script>
     const API_URL = '/api/status';
 
+    // 1. Inicialización del Mapa
+    const map = L.map('map').setView([-2.18, -79.88], 6); // Coordenadas iniciales (Ecuador)
+    
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+      attribution: '&copy; OpenStreetMap &copy; CARTO',
+      subdomains: 'abcd',
+      maxZoom: 19
+    }).addTo(map);
+
     function formatUptime(seconds) {
       const h = Math.floor(seconds / 3600);
       const m = Math.floor((seconds % 3600) / 60);
-      return `${h}h ${m}m`;
+      return `${h}h ${m}`;
     }
 
     async function fetchServerStatus() {
@@ -194,11 +219,10 @@
 
         if (data.error) throw new Error(data.error);
 
-        // 1. Nombre del Servidor y Juego
+        // Actualizar datos de interfaz
         document.getElementById('server-name').innerText = data.serverName || 'ECUASERVER';
         document.getElementById('game-name').innerText = `${data.game} (${data.beta || 'Public'})`;
 
-        // 2. Estado (Online / Offline)
         const statusBadge = document.getElementById('status-badge');
         const statusText = document.getElementById('status-text');
         const joinBtn = document.getElementById('steam-join-btn');
@@ -213,7 +237,6 @@
           joinBtn.className = 'btn-steam-join disabled';
         }
 
-        // 3. Slots y Barra de Progreso
         const connectedCount = data.connectedPlayers ? data.connectedPlayers.length : 0;
         const totalSlots = data.slots || 16;
         const percentage = Math.min((connectedCount / totalSlots) * 100, 100);
@@ -221,7 +244,7 @@
         document.getElementById('slots-count').innerText = `${connectedCount} / ${totalSlots}`;
         document.getElementById('slots-bar').style.width = `${percentage}%`;
 
-        // 4. Renderizado de Jugadores Conectados
+        // Renderizar lista de jugadores
         const playersListContainer = document.getElementById('players-list');
         playersListContainer.innerHTML = '';
 
@@ -242,12 +265,10 @@
           playersListContainer.innerHTML = '<div class="player-empty">No hay camioneros en ruta actualmente.</div>';
         }
 
-        // 5. Actualización de Session ID y Enlace Deep Link de Steam
         const sessionId = data.sessionID || '85568392936670275';
         document.getElementById('session-id').value = sessionId;
         joinBtn.href = `steam://run/270880//+connect%20${sessionId}`;
 
-        // 6. Detalles adicionales
         document.getElementById('game-version').innerText = data.game_version || '-';
         document.getElementById('api-uptime').innerText = formatUptime(data.apiUptime || 0);
 
