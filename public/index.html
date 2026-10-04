@@ -31,6 +31,13 @@
     .slots-header { display: flex; justify-content: space-between; margin-bottom: 8px; font-weight: 600; font-size: 0.9rem; }
     .progress-bar-bg { width: 100%; height: 10px; background-color: var(--border-color); border-radius: 5px; overflow: hidden; }
     .progress-bar-fill { height: 100%; width: 0%; background-color: var(--accent-blue); transition: width 0.4s ease; }
+    
+    /* ESTILOS PARA LA LISTA DE JUGADORES */
+    .players-container { display: flex; flex-direction: column; gap: 8px; max-height: 180px; overflow-y: auto; margin-top: 6px; }
+    .player-item { display: flex; align-items: center; gap: 10px; padding: 8px 12px; background-color: var(--bg-color); border: 1px solid var(--border-color); border-radius: 8px; font-size: 0.875rem; }
+    .player-avatar { width: 24px; height: 24px; border-radius: 50%; background-color: var(--accent-blue); display: flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: bold; color: #0f172a; }
+    .player-empty { font-size: 0.85rem; color: var(--text-muted); font-style: italic; padding: 6px 0; }
+
     .session-container { display: flex; gap: 10px; margin-top: 6px; }
     .session-input { flex: 1; background-color: var(--bg-color); border: 1px solid var(--border-color); border-radius: 8px; padding: 10px; color: var(--text-main); font-family: monospace; font-size: 0.9rem; outline: none; }
     .btn-copy { background-color: var(--accent-blue); color: #0f172a; border: none; border-radius: 8px; padding: 10px 16px; font-weight: 600; cursor: pointer; }
@@ -54,6 +61,7 @@
     </div>
 
     <div class="content">
+      <!-- Capacidad / Slots -->
       <div class="card">
         <div class="slots-header">
           <span style="color: var(--text-muted);">Jugadores Conectados</span>
@@ -64,6 +72,15 @@
         </div>
       </div>
 
+      <!-- Lista Visual de Jugadores -->
+      <div class="card">
+        <div class="card-label">Camioneros en Ruta</div>
+        <div class="players-container" id="players-list">
+          <div class="player-empty">Cargando lista...</div>
+        </div>
+      </div>
+
+      <!-- ID de Sesión -->
       <div class="card">
         <div class="card-label">ID de Sesión (Unirse al servidor)</div>
         <div class="session-container">
@@ -72,6 +89,7 @@
         </div>
       </div>
 
+      <!-- Información Adicional -->
       <div class="grid-2">
         <div class="card">
           <div class="card-label">Versión</div>
@@ -90,7 +108,6 @@
   </div>
 
   <script>
-    // Apunta de forma relativa al endpoint de Vercel
     const API_URL = '/api/status';
 
     function formatUptime(seconds) {
@@ -106,9 +123,11 @@
 
         if (data.error) throw new Error(data.error);
 
+        // 1. Nombre del Servidor y Juego
         document.getElementById('server-name').innerText = data.serverName || 'ECUASERVER';
         document.getElementById('game-name').innerText = `${data.game} (${data.beta || 'Public'})`;
 
+        // 2. Estado (Online / Offline)
         const statusBadge = document.getElementById('status-badge');
         const statusText = document.getElementById('status-text');
         
@@ -120,6 +139,7 @@
           statusText.innerText = 'Offline';
         }
 
+        // 3. Slots y Barra de Progreso
         const connectedCount = data.connectedPlayers ? data.connectedPlayers.length : 0;
         const totalSlots = data.slots || 16;
         const percentage = Math.min((connectedCount / totalSlots) * 100, 100);
@@ -127,6 +147,28 @@
         document.getElementById('slots-count').innerText = `${connectedCount} / ${totalSlots}`;
         document.getElementById('slots-bar').style.width = `${percentage}%`;
 
+        // 4. Renderizado de Jugadores Conectados
+        const playersListContainer = document.getElementById('players-list');
+        playersListContainer.innerHTML = ''; // Limpiar contenedor
+
+        if (data.connectedPlayers && data.connectedPlayers.length > 0) {
+          data.connectedPlayers.forEach(player => {
+            const playerName = typeof player === 'string' ? player : (player.name || player.username || 'Camionero');
+            const firstLetter = playerName.charAt(0).toUpperCase();
+
+            const playerItem = document.createElement('div');
+            playerItem.className = 'player-item';
+            playerItem.innerHTML = `
+              <div class="player-avatar">${firstLetter}</div>
+              <span>${playerName}</span>
+            `;
+            playersListContainer.appendChild(playerItem);
+          });
+        } else {
+          playersListContainer.innerHTML = '<div class="player-empty">No hay camioneros en ruta actualmente.</div>';
+        }
+
+        // 5. ID de Sesión y Detalles
         document.getElementById('session-id').value = data.sessionID || 'No disponible';
         document.getElementById('game-version').innerText = data.game_version || '-';
         document.getElementById('api-uptime').innerText = formatUptime(data.apiUptime || 0);
@@ -136,6 +178,7 @@
         const statusBadge = document.getElementById('status-badge');
         statusBadge.className = 'status-badge offline';
         document.getElementById('status-text').innerText = 'Sin Conexión';
+        document.getElementById('players-list').innerHTML = '<div class="player-empty">Servidor no disponible.</div>';
       }
     }
 
