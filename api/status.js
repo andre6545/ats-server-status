@@ -14,7 +14,7 @@ export default async function handler(req, res) {
   }
 
   // REEMPLAZA ESTA URL CON LA DIRECCIÓN IP / PUERTO O DOMINIO REAL DE TU API ATS
-  const ATS_API_URL = 'http://TU-IP-O-DOMINIO-DEL-SERVIDOR:PUERTO/status';
+  const ATS_API_URL = 'http://159.89.51.54/status';
 
   try {
     const response = await fetch(ATS_API_URL);
