@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ECUASERVER +593 | Estado del Servidor</title>
+  <style>
+    :root {
+      --bg-color: #0f172a;
+      --card-bg: #1e293b;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --accent-online: #10b981;
+      --accent-offline: #ef4444;
+      --accent-blue: #38bdf8;
+      --border-color: #334155;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, -apple-system, sans-serif; }
+    body { background-color: var(--bg-color); color: var(--text-main); min-height: 100vh; display: flex; justify-content: center; align-items: center; padding: 20px; }
+    .dashboard { width: 100%; max-width: 550px; background-color: var(--card-bg); border-radius: 16px; border: 1px solid var(--border-color); box-shadow: 0 20px 25px -5px rgba(0,0,0,0.5); overflow: hidden; }
+    .header { padding: 24px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; }
+    .header-title h1 { font-size: 1.4rem; font-weight: 700; color: var(--text-main); }
+    .header-title p { font-size: 0.85rem; color: var(--text-muted); margin-top: 4px; }
+    .status-badge { display: flex; align-items: center; gap: 8px; padding: 6px 14px; border-radius: 20px; font-size: 0.85rem; font-weight: 600; background-color: rgba(16, 185, 129, 0.1); color: var(--accent-online); border: 1px solid rgba(16, 185, 129, 0.2); }
+    .status-badge.offline { background-color: rgba(239, 68, 68, 0.1); color: var(--accent-offline); border-color: rgba(239, 68, 68, 0.2); }
+    .status-dot { width: 8px; height: 8px; border-radius: 50%; background-color: currentColor; }
+    .content { padding: 24px; display: flex; flex-direction: column; gap: 16px; }
+    .card { background-color: rgba(15, 23, 42, 0.6); border: 1px solid var(--border-color); border-radius: 12px; padding: 16px; }
+    .card-label { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted); margin-bottom: 8px; }
+    .slots-header { display: flex; justify-content: space-between; margin-bottom: 8px; font-weight: 600; font-size: 0.9rem; }
+    .progress-bar-bg { width: 100%; height: 10px; background-color: var(--border-color); border-radius: 5px; overflow: hidden; }
+    .progress-bar-fill { height: 100%; width: 0%; background-color: var(--accent-blue); transition: width 0.4s ease; }
+    .session-container { display: flex; gap: 10px; margin-top: 6px; }
+    .session-input { flex: 1; background-color: var(--bg-color); border: 1px solid var(--border-color); border-radius: 8px; padding: 10px; color: var(--text-main); font-family: monospace; font-size: 0.9rem; outline: none; }
+    .btn-copy { background-color: var(--accent-blue); color: #0f172a; border: none; border-radius: 8px; padding: 10px 16px; font-weight: 600; cursor: pointer; }
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .info-value { font-size: 1rem; font-weight: 600; }
+    .footer { padding: 14px; background-color: rgba(15, 23, 42, 0.4); border-top: 1px solid var(--border-color); text-align: center; font-size: 0.75rem; color: var(--text-muted); }
+  </style>
+</head>
+<body>
+
+  <div class="dashboard">
+    <div class="header">
+      <div class="header-title">
+        <h1 id="server-name">Cargando...</h1>
+        <p id="game-name">American Truck Simulator</p>
+      </div>
+      <div class="status-badge" id="status-badge">
+        <span class="status-dot"></span>
+        <span id="status-text">Verificando</span>
+      </div>
+    </div>
+
+    <div class="content">
+      <div class="card">
+        <div class="slots-header">
+          <span style="color: var(--text-muted);">Jugadores Conectados</span>
+          <span id="slots-count">0 / 0</span>
+        </div>
+        <div class="progress-bar-bg">
+          <div class="progress-bar-fill" id="slots-bar"></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-label">ID de Sesión (Unirse al servidor)</div>
+        <div class="session-container">
+          <input type="text" class="session-input" id="session-id" value="Cargando..." readonly>
+          <button class="btn-copy" onclick="copySessionId()" id="btn-copy">Copiar</button>
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-label">Versión</div>
+          <div class="info-value" id="game-version">-</div>
+        </div>
+        <div class="card">
+          <div class="card-label">Tiempo Activo</div>
+          <div class="info-value" id="api-uptime">-</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer">
+      Actualizado automáticamente cada 10 segundos
+    </div>
+  </div>
+
+  <script>
+    // Apunta de forma relativa al endpoint de Vercel
+    const API_URL = '/api/status';
+
+    function formatUptime(seconds) {
+      const h = Math.floor(seconds / 3600);
+      const m = Math.floor((seconds % 3600) / 60);
+      return `${h}h ${m}m`;
+    }
+
+    async function fetchServerStatus() {
+      try {
+        const response = await fetch(API_URL);
+        const data = await response.json();
+
+        if (data.error) throw new Error(data.error);
+
+        document.getElementById('server-name').innerText = data.serverName || 'ECUASERVER';
+        document.getElementById('game-name').innerText = `${data.game} (${data.beta || 'Public'})`;
+
+        const statusBadge = document.getElementById('status-badge');
+        const statusText = document.getElementById('status-text');
+        
+        if (data.serverRunning) {
+          statusBadge.className = 'status-badge';
+          statusText.innerText = 'En Línea';
+        } else {
+          statusBadge.className = 'status-badge offline';
+          statusText.innerText = 'Offline';
+        }
+
+        const connectedCount = data.connectedPlayers ? data.connectedPlayers.length : 0;
+        const totalSlots = data.slots || 16;
+        const percentage = Math.min((connectedCount / totalSlots) * 100, 100);
+
+        document.getElementById('slots-count').innerText = `${connectedCount} / ${totalSlots}`;
+        document.getElementById('slots-bar').style.width = `${percentage}%`;
+
+        document.getElementById('session-id').value = data.sessionID || 'No disponible';
+        document.getElementById('game-version').innerText = data.game_version || '-';
+        document.getElementById('api-uptime').innerText = formatUptime(data.apiUptime || 0);
+
+      } catch (error) {
+        console.error('Error:', error);
+        const statusBadge = document.getElementById('status-badge');
+        statusBadge.className = 'status-badge offline';
+        document.getElementById('status-text').innerText = 'Sin Conexión';
+      }
+    }
+
+    function copySessionId() {
+      const input = document.getElementById('session-id');
+      input.select();
+      navigator.clipboard.writeText(input.value).then(() => {
+        const btn = document.getElementById('btn-copy');
+        btn.innerText = '¡Copiado!';
+        setTimeout(() => { btn.innerText = 'Copiar'; }, 2000);
+      });
+    }
+
+    fetchServerStatus();
+    setInterval(fetchServerStatus, 10000);
+  </script>
+</body>
+</html>
