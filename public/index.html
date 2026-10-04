@@ -32,7 +32,36 @@
     .progress-bar-bg { width: 100%; height: 10px; background-color: var(--border-color); border-radius: 5px; overflow: hidden; }
     .progress-bar-fill { height: 100%; width: 0%; background-color: var(--accent-blue); transition: width 0.4s ease; }
     
-    /* ESTILOS PARA LA LISTA DE JUGADORES */
+    /* BOTÓN DIRECTO DE STEAM */
+    .btn-steam-join {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      width: 100%;
+      padding: 14px;
+      background: linear-gradient(135deg, #00adff 0%, #0072ff 100%);
+      color: #ffffff;
+      font-weight: 700;
+      font-size: 1rem;
+      text-decoration: none;
+      border-radius: 10px;
+      box-shadow: 0 4px 14px rgba(0, 114, 255, 0.3);
+      transition: transform 0.2s, box-shadow 0.2s, opacity 0.2s;
+    }
+    .btn-steam-join:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(0, 114, 255, 0.4);
+    }
+    .btn-steam-join.disabled {
+      background: var(--border-color);
+      color: var(--text-muted);
+      cursor: not-allowed;
+      pointer-events: none;
+      box-shadow: none;
+    }
+
+    /* LISTA DE JUGADORES */
     .players-container { display: flex; flex-direction: column; gap: 8px; max-height: 180px; overflow-y: auto; margin-top: 6px; }
     .player-item { display: flex; align-items: center; gap: 10px; padding: 8px 12px; background-color: var(--bg-color); border: 1px solid var(--border-color); border-radius: 8px; font-size: 0.875rem; }
     .player-avatar { width: 24px; height: 24px; border-radius: 50%; background-color: var(--accent-blue); display: flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: bold; color: #0f172a; }
@@ -61,6 +90,11 @@
     </div>
 
     <div class="content">
+      <!-- Botón de Conexión Directa Steam -->
+      <a href="steam://run/270880//+connect%2085568392936670275" id="steam-join-btn" class="btn-steam-join">
+        🚛 Unirse al Servidor (Steam)
+      </a>
+
       <!-- Capacidad / Slots -->
       <div class="card">
         <div class="slots-header">
@@ -82,9 +116,9 @@
 
       <!-- ID de Sesión -->
       <div class="card">
-        <div class="card-label">ID de Sesión (Unirse al servidor)</div>
+        <div class="card-label">ID de Sesión (Copia manual)</div>
         <div class="session-container">
-          <input type="text" class="session-input" id="session-id" value="Cargando..." readonly>
+          <input type="text" class="session-input" id="session-id" value="85568392936670275" readonly>
           <button class="btn-copy" onclick="copySessionId()" id="btn-copy">Copiar</button>
         </div>
       </div>
@@ -130,13 +164,16 @@
         // 2. Estado (Online / Offline)
         const statusBadge = document.getElementById('status-badge');
         const statusText = document.getElementById('status-text');
+        const joinBtn = document.getElementById('steam-join-btn');
         
         if (data.serverRunning) {
           statusBadge.className = 'status-badge';
           statusText.innerText = 'En Línea';
+          joinBtn.className = 'btn-steam-join';
         } else {
           statusBadge.className = 'status-badge offline';
           statusText.innerText = 'Offline';
+          joinBtn.className = 'btn-steam-join disabled';
         }
 
         // 3. Slots y Barra de Progreso
@@ -149,7 +186,7 @@
 
         // 4. Renderizado de Jugadores Conectados
         const playersListContainer = document.getElementById('players-list');
-        playersListContainer.innerHTML = ''; // Limpiar contenedor
+        playersListContainer.innerHTML = '';
 
         if (data.connectedPlayers && data.connectedPlayers.length > 0) {
           data.connectedPlayers.forEach(player => {
@@ -168,8 +205,12 @@
           playersListContainer.innerHTML = '<div class="player-empty">No hay camioneros en ruta actualmente.</div>';
         }
 
-        // 5. ID de Sesión y Detalles
-        document.getElementById('session-id').value = data.sessionID || 'No disponible';
+        // 5. Actualización de Session ID y Enlace Deep Link de Steam
+        const sessionId = data.sessionID || '85568392936670275';
+        document.getElementById('session-id').value = sessionId;
+        joinBtn.href = `steam://run/270880//+connect%20${sessionId}`;
+
+        // 6. Detalles adicionales
         document.getElementById('game-version').innerText = data.game_version || '-';
         document.getElementById('api-uptime').innerText = formatUptime(data.apiUptime || 0);
 
@@ -179,6 +220,9 @@
         statusBadge.className = 'status-badge offline';
         document.getElementById('status-text').innerText = 'Sin Conexión';
         document.getElementById('players-list').innerHTML = '<div class="player-empty">Servidor no disponible.</div>';
+        
+        const joinBtn = document.getElementById('steam-join-btn');
+        joinBtn.className = 'btn-steam-join disabled';
       }
     }
 
