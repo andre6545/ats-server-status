@@ -5,6 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#0f172a">
   <meta name="description" content="Estado en tiempo real del servidor ECUASERVER +593 para American Truck Simulator.">
+  <meta name="robots" content="index,follow">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="ECUASERVER +593 | Estado del Servidor">
+  <meta property="og:description" content="Consulta el estado del servidor ECUASERVER +593, jugadores conectados y Session ID.">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="ECUASERVER +593 | Estado del Servidor">
+  <meta name="twitter:description" content="Estado en tiempo real del servidor ECUASERVER +593.">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230f172a'/%3E%3Ccircle cx='32' cy='32' r='23' fill='%2338bdf8'/%3E%3Ctext x='32' y='39' text-anchor='middle' font-family='Arial,sans-serif' font-size='22' font-weight='700' fill='%230f172a'%3EEC%3C/text%3E%3C/svg%3E">
   <title>ECUASERVER +593 | Estado del Servidor</title>
 
   <style>
@@ -22,6 +30,7 @@
       --whatsapp-color: #25d366;
       --warning-color: #f59e0b;
       --focus-color: #7dd3fc;
+      --info-color: #a78bfa;
     }
 
     * {
@@ -33,6 +42,7 @@
 
     html {
       color-scheme: dark;
+      scroll-behavior: smooth;
     }
 
     body {
@@ -66,7 +76,7 @@
 
     .dashboard {
       width: 100%;
-      max-width: 550px;
+      max-width: 600px;
       background-color: var(--card-bg);
       border-radius: 16px;
       border: 1px solid var(--border-color);
@@ -98,6 +108,7 @@
       font-size: 0.85rem;
       color: var(--text-muted);
       margin-top: 4px;
+      overflow-wrap: anywhere;
     }
 
     .status-badge {
@@ -121,6 +132,18 @@
       border-color: rgba(239, 68, 68, 0.2);
     }
 
+    .status-badge.warning {
+      background-color: rgba(245, 158, 11, 0.1);
+      color: var(--warning-color);
+      border-color: rgba(245, 158, 11, 0.25);
+    }
+
+    .status-badge.checking {
+      background-color: rgba(167, 139, 250, 0.1);
+      color: var(--info-color);
+      border-color: rgba(167, 139, 250, 0.2);
+    }
+
     .status-dot {
       width: 8px;
       height: 8px;
@@ -129,7 +152,7 @@
       flex-shrink: 0;
     }
 
-    .status-badge:not(.offline) .status-dot {
+    .status-badge.online .status-dot {
       animation: pulse 2s ease-in-out infinite;
     }
 
@@ -182,6 +205,7 @@
     .slots-percentage {
       color: var(--text-muted);
       font-size: 0.8rem;
+      margin-left: 6px;
     }
 
     .progress-bar-bg {
@@ -242,17 +266,55 @@
       font-size: 0.75rem;
       color: var(--text-muted);
       margin-top: 8px;
+      line-height: 1.45;
     }
 
-    .players-header {
+    .sub-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .btn-secondary {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      min-width: 0;
+      padding: 10px 12px;
+      border-radius: 8px;
+      border: 1px solid var(--border-color);
+      background: rgba(15, 23, 42, 0.85);
+      color: var(--text-main);
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 0.82rem;
+      text-decoration: none;
+      transition: transform 0.2s, background-color 0.2s, border-color 0.2s;
+    }
+
+    .btn-secondary:hover {
+      transform: translateY(-1px);
+      border-color: var(--accent-blue);
+      background: rgba(56, 189, 248, 0.08);
+    }
+
+    .players-header,
+    .section-title-row,
+    .refresh-row {
       display: flex;
       justify-content: space-between;
       align-items: center;
       gap: 10px;
+    }
+
+    .players-header {
       margin-bottom: 8px;
     }
 
-    .players-count {
+    .players-count,
+    .muted-value {
       font-size: 0.75rem;
       color: var(--text-muted);
     }
@@ -349,7 +411,9 @@
       color: #fff;
     }
 
-    .grid-2 {
+    .grid-2,
+    .health-grid,
+    .stats-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 12px;
@@ -359,6 +423,24 @@
       font-size: 1rem;
       font-weight: 600;
       overflow-wrap: anywhere;
+    }
+
+    .health-value {
+      margin-top: 4px;
+      font-size: 0.9rem;
+      font-weight: 600;
+    }
+
+    .health-value.good {
+      color: var(--accent-online);
+    }
+
+    .health-value.warn {
+      color: var(--warning-color);
+    }
+
+    .health-value.bad {
+      color: var(--accent-offline);
     }
 
     .community-buttons {
@@ -394,15 +476,138 @@
       background-color: var(--whatsapp-color);
     }
 
+    .refresh-row {
+      align-items: stretch;
+    }
+
     .refresh-status {
-      text-align: center;
-      font-size: 0.72rem;
+      flex: 1;
+      font-size: 0.74rem;
       color: var(--text-muted);
       min-height: 16px;
+      display: flex;
+      align-items: center;
+      line-height: 1.4;
     }
 
     .refresh-status.error {
       color: var(--accent-offline);
+    }
+
+    .refresh-status.warning {
+      color: var(--warning-color);
+    }
+
+    .btn-refresh {
+      flex-shrink: 0;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 9px 12px;
+      border-radius: 8px;
+      border: 1px solid var(--border-color);
+      background: rgba(15, 23, 42, 0.85);
+      color: var(--text-main);
+      cursor: pointer;
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+
+    .btn-refresh:hover {
+      border-color: var(--accent-blue);
+    }
+
+    .btn-refresh:disabled {
+      cursor: progress;
+      opacity: 0.6;
+    }
+
+    .notification-area {
+      position: fixed;
+      right: 16px;
+      bottom: 16px;
+      z-index: 1000;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      width: min(360px, calc(100vw - 32px));
+      pointer-events: none;
+    }
+
+    .toast {
+      padding: 12px 14px;
+      border-radius: 10px;
+      border: 1px solid var(--border-color);
+      background: rgba(15, 23, 42, 0.96);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+      color: var(--text-main);
+      font-size: 0.85rem;
+      line-height: 1.35;
+    }
+
+    .toast.online {
+      border-color: rgba(16, 185, 129, 0.4);
+    }
+
+    .toast.offline {
+      border-color: rgba(239, 68, 68, 0.4);
+    }
+
+    .toast.warning {
+      border-color: rgba(245, 158, 11, 0.4);
+    }
+
+    .stats-grid {
+      margin-bottom: 12px;
+    }
+
+    .stat-box {
+      background: rgba(15, 23, 42, 0.65);
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      padding: 10px;
+    }
+
+    .stat-title {
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .stat-number {
+      margin-top: 4px;
+      font-size: 1.1rem;
+      font-weight: 700;
+    }
+
+    .history-bars {
+      display: flex;
+      align-items: flex-end;
+      gap: 3px;
+      height: 54px;
+      overflow: hidden;
+    }
+
+    .history-bar {
+      flex: 1 1 0;
+      min-width: 2px;
+      border-radius: 3px 3px 1px 1px;
+      background-color: var(--accent-blue);
+      opacity: 0.9;
+    }
+
+    .history-bar.offline {
+      background-color: var(--border-color);
+      opacity: 0.7;
+    }
+
+    .history-caption {
+      margin-top: 6px;
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      text-align: center;
     }
 
     .footer {
@@ -444,7 +649,10 @@
       }
 
       .grid-2,
-      .community-buttons {
+      .health-grid,
+      .stats-grid,
+      .community-buttons,
+      .sub-actions {
         grid-template-columns: 1fr;
       }
 
@@ -452,12 +660,25 @@
         flex-direction: column;
       }
 
-      .btn-copy {
+      .btn-copy,
+      .btn-secondary {
+        width: 100%;
+      }
+
+      .refresh-row {
+        flex-direction: column;
+      }
+
+      .btn-refresh {
         width: 100%;
       }
     }
 
     @media (prefers-reduced-motion: reduce) {
+      html {
+        scroll-behavior: auto;
+      }
+
       *,
       *::before,
       *::after {
@@ -477,7 +698,7 @@
         <p id="game-name">American Truck Simulator</p>
       </div>
 
-      <div class="status-badge" id="status-badge" role="status" aria-live="polite">
+      <div class="status-badge checking" id="status-badge" role="status" aria-live="polite">
         <span class="status-dot" aria-hidden="true"></span>
         <span id="status-text">Verificando</span>
       </div>
@@ -488,20 +709,32 @@
         <a
           href="steam://run/270880//+connect%2085568392936670275"
           id="steam-join-btn"
-          class="btn-steam-join"
+          class="btn-steam-join disabled"
           aria-label="Unirse al servidor mediante Steam"
+          aria-disabled="true"
         >
           🚛 Unirse al Servidor (Steam)
         </a>
-        <p class="steam-help">Si Steam no se abre, puedes copiar el ID de sesión manualmente.</p>
+        <p class="steam-help" id="steam-help">
+          Verificando el servidor antes de habilitar la conexión de Steam.
+        </p>
+
+        <div class="sub-actions">
+          <button type="button" class="btn-secondary" id="btn-copy-steam" aria-label="Copiar comando de conexión de Steam">
+            📋 Copiar comando Steam
+          </button>
+          <button type="button" class="btn-secondary" id="btn-refresh-top" aria-label="Actualizar el estado del servidor ahora">
+            🔄 Actualizar ahora
+          </button>
+        </div>
       </section>
 
       <section class="card" aria-label="Capacidad del servidor">
         <div class="slots-header">
           <span class="slots-label">Jugadores Conectados</span>
           <span>
-            <span id="slots-count">0 / 0</span>
-            <span class="slots-percentage" id="slots-percentage">0%</span>
+            <span id="slots-count">0 / —</span>
+            <span class="slots-percentage" id="slots-percentage">—</span>
           </span>
         </div>
 
@@ -529,7 +762,7 @@
         </div>
       </section>
 
-      <section class="card" aria-label="ID de sesión">
+      <section class="card" aria-label="ID de sesión y conexión manual">
         <div class="card-label">ID de Sesión (Copia manual)</div>
 
         <div class="session-container">
@@ -544,7 +777,6 @@
           <button
             type="button"
             class="btn-copy"
-            onclick="copySessionId()"
             id="btn-copy"
             aria-label="Copiar ID de sesión"
           >
@@ -563,6 +795,61 @@
           <div class="card-label">Tiempo Activo</div>
           <div class="info-value" id="api-uptime">-</div>
         </div>
+      </section>
+
+      <section class="card" aria-label="Salud de la conexión">
+        <div class="section-title-row">
+          <div class="card-label" style="margin-bottom: 0;">Salud del servicio</div>
+          <span class="muted-value" id="cache-state">Sin comprobar</span>
+        </div>
+
+        <div class="health-grid" style="margin-top: 12px;">
+          <div>
+            <div class="card-label">API ATS</div>
+            <div class="health-value" id="ats-health">Verificando...</div>
+          </div>
+          <div>
+            <div class="card-label">Tiempo ATS</div>
+            <div class="health-value" id="ats-latency">—</div>
+          </div>
+          <div>
+            <div class="card-label">Respuesta web</div>
+            <div class="health-value" id="web-latency">—</div>
+          </div>
+          <div>
+            <div class="card-label">Última respuesta válida</div>
+            <div class="health-value" id="last-valid-time">—</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="card" aria-label="Estadísticas locales">
+        <div class="section-title-row">
+          <div class="card-label" style="margin-bottom: 0;">Estadísticas locales</div>
+          <span class="muted-value">Este dispositivo · últimas 24 h</span>
+        </div>
+
+        <div class="stats-grid" style="margin-top: 12px;">
+          <div class="stat-box">
+            <div class="stat-title">Ahora</div>
+            <div class="stat-number" id="stat-now">—</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-title">Máximo observado</div>
+            <div class="stat-number" id="stat-max">—</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-title">Promedio</div>
+            <div class="stat-number" id="stat-average">—</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-title">Comprobaciones online</div>
+            <div class="stat-number" id="stat-online">—</div>
+          </div>
+        </div>
+
+        <div class="history-bars" id="history-bars" aria-label="Historial local de jugadores"></div>
+        <div class="history-caption" id="history-caption">Todavía no hay suficientes muestras locales.</div>
       </section>
 
       <nav class="community-buttons" aria-label="Comunidad">
@@ -587,25 +874,50 @@
         </a>
       </nav>
 
-      <div class="refresh-status" id="refresh-status" aria-live="polite">
-        Verificando servidor...
+      <div class="refresh-row">
+        <div class="refresh-status" id="refresh-status" aria-live="polite">
+          Verificando servidor...
+        </div>
+        <button type="button" class="btn-refresh" id="btn-refresh" aria-label="Actualizar estado del servidor">
+          🔄 Actualizar
+        </button>
       </div>
     </div>
 
     <footer class="footer">
-      Actualización automática cada 10 segundos
+      <span id="footer-refresh-text">Actualización automática cada 10 segundos mientras la pestaña está activa.</span>
     </footer>
   </main>
 
+  <div class="notification-area" id="notification-area" aria-live="polite" aria-atomic="true"></div>
+
   <script>
     const API_URL = '/api/status';
-    const REFRESH_INTERVAL = 10000;
     const DEFAULT_SESSION_ID = '85568392936670275';
+
+    const REFRESH_INTERVALS = {
+      online: 10000,
+      offline: 20000,
+      stale: 15000,
+      error: 20000,
+      checking: 10000
+    };
+
+    const HISTORY_STORAGE_KEY = 'ecuaservER_status_history_v1';
+    const HISTORY_MAX_AGE_MS = 24 * 60 * 60 * 1000;
+    const HISTORY_MAX_ITEMS = 288;
 
     let refreshTimer = null;
     let isFetching = false;
+    let forceRefresh = false;
     let previousPlayers = [];
+    let previousServerRunning = null;
     let lastSuccessfulUpdate = null;
+    let lastFreshPayload = null;
+    let consecutiveErrors = 0;
+    let currentState = 'checking';
+    let lastRoundTripMs = null;
+    let historySamples = loadHistory();
 
     const elements = {
       serverName: document.getElementById('server-name'),
@@ -613,6 +925,9 @@
       statusBadge: document.getElementById('status-badge'),
       statusText: document.getElementById('status-text'),
       joinBtn: document.getElementById('steam-join-btn'),
+      steamHelp: document.getElementById('steam-help'),
+      copySteamButton: document.getElementById('btn-copy-steam'),
+      topRefreshButton: document.getElementById('btn-refresh-top'),
       slotsCount: document.getElementById('slots-count'),
       slotsPercentage: document.getElementById('slots-percentage'),
       slotsBar: document.getElementById('slots-bar'),
@@ -622,15 +937,59 @@
       sessionId: document.getElementById('session-id'),
       gameVersion: document.getElementById('game-version'),
       apiUptime: document.getElementById('api-uptime'),
+      atsHealth: document.getElementById('ats-health'),
+      atsLatency: document.getElementById('ats-latency'),
+      webLatency: document.getElementById('web-latency'),
+      lastValidTime: document.getElementById('last-valid-time'),
+      cacheState: document.getElementById('cache-state'),
       refreshStatus: document.getElementById('refresh-status'),
-      copyButton: document.getElementById('btn-copy')
+      refreshButton: document.getElementById('btn-refresh'),
+      copyButton: document.getElementById('btn-copy'),
+      footerRefreshText: document.getElementById('footer-refresh-text'),
+      notificationArea: document.getElementById('notification-area'),
+      statNow: document.getElementById('stat-now'),
+      statMax: document.getElementById('stat-max'),
+      statAverage: document.getElementById('stat-average'),
+      statOnline: document.getElementById('stat-online'),
+      historyBars: document.getElementById('history-bars'),
+      historyCaption: document.getElementById('history-caption')
     };
 
-    function formatUptime(seconds) {
-      const safeSeconds = Number(seconds) || 0;
-      const h = Math.floor(safeSeconds / 3600);
-      const m = Math.floor((safeSeconds % 3600) / 60);
-      return `${h}h ${m}m`;
+    function formatUptime(value) {
+      if (typeof value === 'string' && value.trim() && !Number.isFinite(Number(value))) {
+        return value.trim();
+      }
+
+      const safeSeconds = Math.max(Number(value) || 0, 0);
+      const days = Math.floor(safeSeconds / 86400);
+      const hours = Math.floor((safeSeconds % 86400) / 3600);
+      const minutes = Math.floor((safeSeconds % 3600) / 60);
+
+      if (days > 0) {
+        return `${days}d ${hours}h ${minutes}m`;
+      }
+
+      return `${hours}h ${minutes}m`;
+    }
+
+    function formatBeta(beta) {
+      if (beta === true) return 'Beta';
+      if (beta === false || beta === null || beta === undefined || beta === '') return 'Public';
+      return String(beta);
+    }
+
+    function formatClock(date) {
+      return date.toLocaleTimeString('es-EC', {
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit'
+      });
+    }
+
+    function formatDateTime(iso) {
+      if (!iso) return '—';
+      const date = new Date(iso);
+      return Number.isNaN(date.getTime()) ? '—' : formatClock(date);
     }
 
     function getPlayerName(player) {
@@ -639,7 +998,12 @@
       }
 
       if (player && typeof player === 'object') {
-        return String(player.name || player.username || 'Camionero').trim() || 'Camionero';
+        return String(
+          player.name ||
+          player.username ||
+          player.playerName ||
+          'Camionero'
+        ).trim() || 'Camionero';
       }
 
       return 'Camionero';
@@ -667,12 +1031,20 @@
       return playerItem;
     }
 
+    function normalizePlayers(rawPlayers) {
+      if (Array.isArray(rawPlayers)) {
+        return rawPlayers;
+      }
+
+      return [];
+    }
+
     function getPlayerNames(players) {
       return players.map(getPlayerName);
     }
 
     function updatePlayersList(players) {
-      const safePlayers = Array.isArray(players) ? players : [];
+      const safePlayers = normalizePlayers(players);
 
       elements.playersList.replaceChildren();
 
@@ -697,36 +1069,72 @@
       return getPlayerNames(safePlayers);
     }
 
-    function updateStatus(isOnline) {
-      elements.statusBadge.className = isOnline
-        ? 'status-badge'
-        : 'status-badge offline';
+    function updateStatus(state, serverRunning = false) {
+      currentState = state;
 
-      elements.statusText.textContent = isOnline ? 'En Línea' : 'Offline';
+      const classNames = ['status-badge'];
+      let label = 'Verificando';
 
-      elements.joinBtn.className = isOnline
-        ? 'btn-steam-join'
-        : 'btn-steam-join disabled';
+      if (state === 'online') {
+        classNames.push('online');
+        label = 'En Línea';
+      } else if (state === 'offline') {
+        classNames.push('offline');
+        label = 'Offline';
+      } else if (state === 'stale') {
+        classNames.push('warning');
+        label = 'Sin actualizar';
+      } else if (state === 'error') {
+        classNames.push('warning');
+        label = consecutiveErrors >= 3 ? 'Estado desconocido' : 'Sin conexión';
+      } else {
+        classNames.push('checking');
+        label = 'Verificando';
+      }
 
-      elements.joinBtn.setAttribute('aria-disabled', String(!isOnline));
+      elements.statusBadge.className = classNames.join(' ');
+      elements.statusText.textContent = label;
+
+      const canJoin = state === 'online' && Boolean(serverRunning);
+      elements.joinBtn.classList.toggle('disabled', !canJoin);
+      elements.joinBtn.setAttribute('aria-disabled', String(!canJoin));
+
+      if (canJoin) {
+        elements.steamHelp.textContent = 'Steam está habilitado porque el servidor está disponible.';
+      } else if (state === 'stale') {
+        elements.steamHelp.textContent = 'Los datos son antiguos; Steam se habilitará cuando recibamos una respuesta fresca.';
+      } else if (state === 'offline') {
+        elements.steamHelp.textContent = 'El servidor ATS está offline en la última respuesta válida.';
+      } else if (state === 'error') {
+        elements.steamHelp.textContent = 'No se pudo confirmar el estado actual del servidor.';
+      } else {
+        elements.steamHelp.textContent = 'Verificando el servidor antes de habilitar la conexión de Steam.';
+      }
     }
 
     function updateSlots(connectedCount, totalSlots) {
-      const safeTotal = Math.max(Number(totalSlots) || 0, 0);
       const safeConnected = Math.max(Number(connectedCount) || 0, 0);
+      const numericSlots = Number(totalSlots);
+      const hasSlots = Number.isFinite(numericSlots) && numericSlots > 0;
 
-      const percentage = safeTotal > 0
-        ? Math.min((safeConnected / safeTotal) * 100, 100)
-        : 0;
+      elements.slotsBar.classList.remove('warning', 'full');
 
+      if (!hasSlots) {
+        elements.slotsCount.textContent = `${safeConnected} / —`;
+        elements.slotsPercentage.textContent = '—';
+        elements.slotsBar.style.width = '0%';
+        elements.slotsProgress.setAttribute('aria-valuenow', '0');
+        return;
+      }
+
+      const safeTotal = Math.max(numericSlots, 0);
+      const percentage = Math.min((safeConnected / safeTotal) * 100, 100);
       const roundedPercentage = Math.round(percentage);
 
       elements.slotsCount.textContent = `${safeConnected} / ${safeTotal}`;
       elements.slotsPercentage.textContent = `${roundedPercentage}%`;
       elements.slotsBar.style.width = `${percentage}%`;
       elements.slotsProgress.setAttribute('aria-valuenow', String(roundedPercentage));
-
-      elements.slotsBar.classList.remove('warning', 'full');
 
       if (percentage >= 100) {
         elements.slotsBar.classList.add('full');
@@ -735,157 +1143,459 @@
       }
     }
 
-    function updateRefreshStatus(message, isError = false) {
+    function updateRefreshStatus(message, type = '') {
       elements.refreshStatus.textContent = message;
-      elements.refreshStatus.classList.toggle('error', isError);
+      elements.refreshStatus.classList.remove('error', 'warning');
+      if (type === 'error') elements.refreshStatus.classList.add('error');
+      if (type === 'warning') elements.refreshStatus.classList.add('warning');
     }
 
-    function formatClock(date) {
-      return date.toLocaleTimeString('es-EC', {
-        hour: '2-digit',
-        minute: '2-digit',
-        second: '2-digit'
-      });
+    function setHealth(text, type = '') {
+      elements.atsHealth.textContent = text;
+      elements.atsHealth.classList.remove('good', 'warn', 'bad');
+      if (type) elements.atsHealth.classList.add(type);
     }
 
-    async function fetchServerStatus() {
-      if (isFetching) {
+    function setCacheState(meta) {
+      if (!meta) {
+        elements.cacheState.textContent = 'Sin comprobar';
         return;
       }
 
+      if (meta.stale) {
+        elements.cacheState.textContent = 'Datos anteriores';
+        return;
+      }
+
+      if (meta.cache === 'HIT') {
+        elements.cacheState.textContent = 'Caché activa';
+        return;
+      }
+
+      elements.cacheState.textContent = 'Respuesta fresca';
+    }
+
+    function updateLatency(meta, browserRoundTripMs) {
+      const ats = Number(meta?.atsResponseTimeMs);
+      const proxy = Number(meta?.proxyResponseTimeMs);
+
+      elements.atsLatency.textContent = Number.isFinite(ats) && ats >= 0
+        ? `${Math.round(ats)} ms`
+        : '—';
+
+      const browser = Number(browserRoundTripMs);
+      const displayWeb = Number.isFinite(browser) && browser >= 0 ? browser : proxy;
+
+      elements.webLatency.textContent = Number.isFinite(displayWeb) && displayWeb >= 0
+        ? `${Math.round(displayWeb)} ms`
+        : '—';
+
+      if (!Number.isFinite(ats)) {
+        elements.atsHealth.textContent = 'Sin medición';
+        elements.atsHealth.classList.remove('good', 'warn', 'bad');
+        return;
+      }
+
+      if (ats < 300) {
+        setHealth('Excelente', 'good');
+      } else if (ats < 800) {
+        setHealth('Normal', 'warn');
+      } else {
+        setHealth('Lento', 'bad');
+      }
+    }
+
+    function buildSteamUrl(sessionId) {
+      return `steam://run/270880//+connect%20${encodeURIComponent(sessionId)}`;
+    }
+
+    function updateSteamLink(sessionId) {
+      const safeSessionId = String(sessionId || DEFAULT_SESSION_ID);
+      elements.joinBtn.href = buildSteamUrl(safeSessionId);
+    }
+
+    function showToast(message, type = '') {
+      const toast = document.createElement('div');
+      toast.className = `toast${type ? ` ${type}` : ''}`;
+      toast.textContent = message;
+      elements.notificationArea.appendChild(toast);
+
+      window.setTimeout(() => {
+        toast.remove();
+      }, 4500);
+    }
+
+    function detectPlayerChanges(currentPlayers) {
+      const joined = currentPlayers.filter(name => !previousPlayers.includes(name));
+      const left = previousPlayers.filter(name => !currentPlayers.includes(name));
+
+      if (previousPlayers.length > 0) {
+        joined.forEach(name => showToast(`✅ ${name} se conectó al servidor.`, 'online'));
+        left.forEach(name => showToast(`👋 ${name} salió del servidor.`, 'warning'));
+      }
+
+      return { joined, left };
+    }
+
+    function handleServerTransition(serverRunning, isFresh) {
+      if (!isFresh) return;
+
+      if (previousServerRunning === false && serverRunning === true) {
+        showToast('🟢 El servidor volvió a estar en línea.', 'online');
+      } else if (previousServerRunning === true && serverRunning === false) {
+        showToast('🔴 El servidor pasó a offline.', 'offline');
+      }
+
+      previousServerRunning = serverRunning;
+    }
+
+    function getRefreshInterval() {
+      if (document.hidden) return null;
+      return REFRESH_INTERVALS[currentState] || REFRESH_INTERVALS.checking;
+    }
+
+    function scheduleNextRefresh() {
+      clearTimeout(refreshTimer);
+      refreshTimer = null;
+
+      const interval = getRefreshInterval();
+      if (!interval) return;
+
+      refreshTimer = window.setTimeout(fetchServerStatus, interval);
+
+      const seconds = Math.round(interval / 1000);
+      elements.footerRefreshText.textContent =
+        `Actualización automática cada ${seconds} segundos mientras la pestaña está activa.`;
+    }
+
+    function setRefreshing(isRefreshing) {
+      elements.refreshButton.disabled = isRefreshing;
+      elements.topRefreshButton.disabled = isRefreshing;
+      elements.refreshButton.textContent = isRefreshing ? '⟳ Consultando...' : '🔄 Actualizar';
+      elements.topRefreshButton.textContent = isRefreshing ? '⟳ Consultando...' : '🔄 Actualizar ahora';
+    }
+
+    function normalizePayload(data) {
+      const payload = data && typeof data === 'object' ? data : {};
+      const players = normalizePlayers(payload.connectedPlayers);
+      const connectedCount = players.length;
+      const fallbackConnectedCount = Number(payload.connectedPlayersCount);
+
+      return {
+        ...payload,
+        connectedPlayers: players,
+        connectedPlayersCount: connectedCount || (Number.isFinite(fallbackConnectedCount) ? fallbackConnectedCount : 0),
+        serverRunning: Boolean(payload.serverRunning),
+        slots: payload.slots,
+        meta: payload.meta && typeof payload.meta === 'object' ? payload.meta : {}
+      };
+    }
+
+    function renderPayload(rawData, browserRoundTripMs, fromError = false) {
+      const data = normalizePayload(rawData);
+      const meta = data.meta;
+      const stale = Boolean(meta.stale);
+      const serverRunning = Boolean(data.serverRunning);
+
+      elements.serverName.textContent = data.serverName || 'ECUASERVER';
+      elements.gameName.textContent = `${data.game || 'American Truck Simulator'} (${formatBeta(data.beta)})`;
+
+      const currentPlayers = updatePlayersList(data.connectedPlayers);
+      const actualConnectedCount = data.connectedPlayers.length;
+      const connectedCount = actualConnectedCount || Number(data.connectedPlayersCount) || 0;
+
+      updateSlots(connectedCount, data.slots);
+
+      const state = stale ? 'stale' : (serverRunning ? 'online' : 'offline');
+      updateStatus(state, serverRunning);
+      updateLatency(meta, browserRoundTripMs);
+      setCacheState(meta);
+
+      const sessionId = String(data.sessionID || DEFAULT_SESSION_ID);
+      elements.sessionId.value = sessionId;
+      updateSteamLink(sessionId);
+
+      elements.gameVersion.textContent = data.game_version || '-';
+      elements.apiUptime.textContent = formatUptime(data.apiUptime);
+
+      if (meta.cachedAt) {
+        elements.lastValidTime.textContent = formatDateTime(meta.cachedAt);
+        lastSuccessfulUpdate = new Date(meta.cachedAt);
+      }
+
+      if (stale) {
+        setHealth('Datos anteriores', 'warn');
+        updateRefreshStatus(
+          `Sin respuesta fresca · último dato válido: ${formatDateTime(meta.cachedAt)}${meta.apiError ? ` · ${meta.apiError}` : ''}`,
+          'warning'
+        );
+      } else {
+        lastSuccessfulUpdate = new Date();
+        elements.lastValidTime.textContent = formatClock(lastSuccessfulUpdate);
+
+        const changes = detectPlayerChanges(currentPlayers);
+
+        if (changes.joined.length || changes.left.length) {
+          const parts = [];
+          if (changes.joined.length) {
+            parts.push(`+${changes.joined.length} conectado${changes.joined.length === 1 ? '' : 's'}`);
+          }
+          if (changes.left.length) {
+            parts.push(`-${changes.left.length} desconectado${changes.left.length === 1 ? '' : 's'}`);
+          }
+          updateRefreshStatus(`Servidor actualizado · ${parts.join(' · ')}`);
+        } else {
+          updateRefreshStatus(`Última actualización: ${formatClock(lastSuccessfulUpdate)}`);
+        }
+      }
+
+      if (!fromError && !stale) {
+        lastFreshPayload = data;
+        consecutiveErrors = 0;
+      }
+
+      detectServerHealthToast(serverRunning, stale);
+      previousPlayers = currentPlayers;
+      recordHistory(data, stale);
+      renderHistory();
+    }
+
+    function detectServerHealthToast(serverRunning, stale) {
+      if (stale) return;
+      handleServerTransition(serverRunning, true);
+    }
+
+    function applyHardError(error) {
+      consecutiveErrors += 1;
+      currentState = 'error';
+      updateStatus('error', Boolean(lastFreshPayload?.serverRunning));
+
+      setHealth('Sin respuesta', 'bad');
+      elements.cacheState.textContent = lastFreshPayload ? 'Conservando último dato' : 'Sin datos';
+
+      if (lastFreshPayload) {
+        updateRefreshStatus(
+          `${consecutiveErrors >= 3 ? 'Estado desconocido' : 'No se pudo actualizar'} · conservando el último estado válido.`,
+          'warning'
+        );
+      } else {
+        updateRefreshStatus('No se pudo consultar el estado del servidor.', 'error');
+        updatePlayersList([]);
+      }
+
+      console.error('Error al consultar /api/status:', error);
+    }
+
+    async function fetchServerStatus(options = {}) {
+      if (isFetching) return;
+      if (document.hidden && !options.manual) return;
+
       isFetching = true;
+      forceRefresh = Boolean(options.manual);
+      setRefreshing(true);
+
+      const startedAt = performance.now();
+
+      if (!lastFreshPayload) {
+        updateStatus('checking');
+        updateRefreshStatus('Verificando servidor...');
+      }
 
       try {
-        const response = await fetch(API_URL, {
+        const response = await fetch(`${API_URL}${options.manual ? `?t=${Date.now()}` : ''}`, {
           method: 'GET',
           cache: 'no-store',
           headers: {
-            'Accept': 'application/json'
+            Accept: 'application/json'
           }
         });
 
-        if (!response.ok) {
-          throw new Error(`HTTP ${response.status}`);
+        const browserRoundTripMs = performance.now() - startedAt;
+        lastRoundTripMs = browserRoundTripMs;
+
+        let data = null;
+        try {
+          data = await response.json();
+        } catch {
+          data = null;
         }
 
-        const data = await response.json();
+        if (!response.ok) {
+          throw new Error(
+            data?.detail || data?.error || `HTTP ${response.status}`
+          );
+        }
 
-        if (data.error) {
+        if (data?.error && data?.meta?.stale !== true) {
           throw new Error(String(data.error));
         }
 
-        elements.serverName.textContent = data.serverName || 'ECUASERVER';
-        elements.gameName.textContent =
-          `${data.game || 'American Truck Simulator'} (${data.beta || 'Public'})`;
-
-        updateStatus(Boolean(data.serverRunning));
-
-        const players = Array.isArray(data.connectedPlayers)
-          ? data.connectedPlayers
-          : [];
-
-        const connectedCount = players.length;
-        const totalSlots = Number(data.slots) || 16;
-
-        updateSlots(connectedCount, totalSlots);
-
-        const currentPlayers = updatePlayersList(players);
-
-        // Detecta cambios de jugadores sin mostrar ventanas molestas.
-        const joined = currentPlayers.filter(name => !previousPlayers.includes(name));
-        const left = previousPlayers.filter(name => !currentPlayers.includes(name));
-
-        if (previousPlayers.length > 0 && (joined.length || left.length)) {
-          const changes = [];
-
-          if (joined.length) {
-            changes.push(`+${joined.length} conectado${joined.length === 1 ? '' : 's'}`);
-          }
-
-          if (left.length) {
-            changes.push(`-${left.length} desconectado${left.length === 1 ? '' : 's'}`);
-          }
-
-          updateRefreshStatus(`Servidor actualizado · ${changes.join(' · ')}`);
-        } else {
-          lastSuccessfulUpdate = new Date();
-          updateRefreshStatus(`Última actualización: ${formatClock(lastSuccessfulUpdate)}`);
-        }
-
-        previousPlayers = currentPlayers;
-
-        const sessionId = String(data.sessionID || DEFAULT_SESSION_ID);
-
-        elements.sessionId.value = sessionId;
-        elements.joinBtn.href =
-          `steam://run/270880//+connect%20${encodeURIComponent(sessionId)}`;
-
-        elements.gameVersion.textContent = data.game_version || '-';
-        elements.apiUptime.textContent = formatUptime(data.apiUptime || 0);
-
+        renderPayload(data, browserRoundTripMs);
       } catch (error) {
-        console.error('Error al consultar el servidor:', error);
-
-        updateStatus(false);
-
-        elements.playersList.replaceChildren();
-
-        const errorMessage = document.createElement('div');
-        errorMessage.className = 'player-empty';
-        errorMessage.textContent = 'Servidor no disponible.';
-        elements.playersList.appendChild(errorMessage);
-
-        elements.playersCount.textContent = 'Sin datos';
-        updateRefreshStatus('No se pudo actualizar el estado del servidor.', true);
-
+        applyHardError(error);
       } finally {
         isFetching = false;
-
-        clearTimeout(refreshTimer);
-        refreshTimer = setTimeout(fetchServerStatus, REFRESH_INTERVAL);
+        forceRefresh = false;
+        setRefreshing(false);
+        scheduleNextRefresh();
       }
     }
 
-    async function copySessionId() {
-      const value = elements.sessionId.value;
-
-      if (!value) {
-        return;
-      }
+    async function copyText(value, button, successText = '✓ ¡Copiado!', defaultText = 'Copiar') {
+      if (!value) return;
 
       try {
         if (navigator.clipboard && window.isSecureContext) {
           await navigator.clipboard.writeText(value);
         } else {
-          elements.sessionId.focus();
-          elements.sessionId.select();
+          const helper = document.createElement('textarea');
+          helper.value = value;
+          helper.setAttribute('readonly', '');
+          helper.style.position = 'fixed';
+          helper.style.opacity = '0';
+          document.body.appendChild(helper);
+          helper.select();
           document.execCommand('copy');
+          helper.remove();
         }
 
-        elements.copyButton.textContent = '✓ ¡Copiado!';
-        elements.copyButton.classList.remove('error');
-        elements.copyButton.classList.add('copied');
+        button.textContent = successText;
+        button.classList.remove('error');
+        button.classList.add('copied');
 
-        setTimeout(() => {
-          elements.copyButton.textContent = 'Copiar';
-          elements.copyButton.classList.remove('copied');
+        window.setTimeout(() => {
+          button.textContent = defaultText;
+          button.classList.remove('copied');
         }, 2000);
-
       } catch (error) {
         console.error('No se pudo copiar:', error);
+        button.textContent = 'Error';
+        button.classList.remove('copied');
+        button.classList.add('error');
 
-        elements.copyButton.textContent = 'Error';
-        elements.copyButton.classList.remove('copied');
-        elements.copyButton.classList.add('error');
-
-        setTimeout(() => {
-          elements.copyButton.textContent = 'Copiar';
-          elements.copyButton.classList.remove('error');
+        window.setTimeout(() => {
+          button.textContent = defaultText;
+          button.classList.remove('error');
         }, 2000);
       }
     }
 
-    // Primera carga.
+    async function copySessionId() {
+      await copyText(elements.sessionId.value, elements.copyButton);
+    }
+
+    async function copySteamCommand() {
+      const command = buildSteamUrl(elements.sessionId.value || DEFAULT_SESSION_ID);
+      await copyText(command, elements.copySteamButton, '✓ Comando copiado', '📋 Copiar comando Steam');
+    }
+
+    function loadHistory() {
+      try {
+        const raw = localStorage.getItem(HISTORY_STORAGE_KEY);
+        if (!raw) return [];
+        const parsed = JSON.parse(raw);
+        if (!Array.isArray(parsed)) return [];
+        return pruneHistory(parsed);
+      } catch {
+        return [];
+      }
+    }
+
+    function pruneHistory(samples) {
+      const cutoff = Date.now() - HISTORY_MAX_AGE_MS;
+      return samples
+        .filter(sample => sample && Number(sample.t) >= cutoff)
+        .slice(-HISTORY_MAX_ITEMS);
+    }
+
+    function saveHistory() {
+      historySamples = pruneHistory(historySamples);
+      try {
+        localStorage.setItem(HISTORY_STORAGE_KEY, JSON.stringify(historySamples));
+      } catch (error) {
+        console.warn('No se pudo guardar el historial local:', error);
+      }
+    }
+
+    function recordHistory(data, stale) {
+      const players = Array.isArray(data.connectedPlayers) ? data.connectedPlayers.length : 0;
+      const slots = Number(data.slots) > 0 ? Number(data.slots) : 0;
+
+      historySamples.push({
+        t: Date.now(),
+        players,
+        slots,
+        online: Boolean(data.serverRunning) && !stale
+      });
+
+      historySamples = pruneHistory(historySamples);
+      saveHistory();
+    }
+
+    function renderHistory() {
+      const samples = pruneHistory(historySamples);
+
+      if (!samples.length) {
+        elements.statNow.textContent = '—';
+        elements.statMax.textContent = '—';
+        elements.statAverage.textContent = '—';
+        elements.statOnline.textContent = '—';
+        elements.historyBars.replaceChildren();
+        elements.historyCaption.textContent = 'Todavía no hay suficientes muestras locales.';
+        return;
+      }
+
+      const playerValues = samples.map(sample => Number(sample.players) || 0);
+      const maxPlayers = Math.max(...playerValues, 0);
+      const average = playerValues.reduce((sum, value) => sum + value, 0) / playerValues.length;
+      const onlineCount = samples.filter(sample => sample.online).length;
+      const latest = samples[samples.length - 1];
+
+      elements.statNow.textContent = `${latest.players}`;
+      elements.statMax.textContent = `${maxPlayers}`;
+      elements.statAverage.textContent = average.toFixed(1);
+      elements.statOnline.textContent = `${Math.round((onlineCount / samples.length) * 100)}%`;
+
+      elements.historyBars.replaceChildren();
+
+      const visible = samples.slice(-72);
+      const localMax = Math.max(...visible.map(sample => Number(sample.players) || 0), 1);
+
+      const fragment = document.createDocumentFragment();
+      visible.forEach(sample => {
+        const bar = document.createElement('div');
+        bar.className = `history-bar${sample.online ? '' : ' offline'}`;
+        const players = Number(sample.players) || 0;
+        bar.style.height = `${Math.max(8, (players / localMax) * 100)}%`;
+        bar.title = `${new Date(sample.t).toLocaleTimeString('es-EC', { hour: '2-digit', minute: '2-digit' })} · ${players} jugadores`;
+        fragment.appendChild(bar);
+      });
+
+      elements.historyBars.appendChild(fragment);
+      elements.historyCaption.textContent =
+        `${samples.length} muestras locales guardadas en este dispositivo.`;
+    }
+
+    function initEvents() {
+      elements.copyButton.addEventListener('click', copySessionId);
+      elements.copySteamButton.addEventListener('click', copySteamCommand);
+      elements.refreshButton.addEventListener('click', () => fetchServerStatus({ manual: true }));
+      elements.topRefreshButton.addEventListener('click', () => fetchServerStatus({ manual: true }));
+
+      document.addEventListener('visibilitychange', () => {
+        if (document.hidden) {
+          clearTimeout(refreshTimer);
+          refreshTimer = null;
+          return;
+        }
+
+        fetchServerStatus({ manual: true });
+      });
+    }
+
+    initEvents();
+    renderHistory();
+    updateStatus('checking');
     fetchServerStatus();
   </script>
 </body>
