@@ -1,37 +1,85 @@
 export default async function handler(req, res) {
   // =========================================================
-  // CORS + CABECERAS DE SEGURIDAD
+  // CONFIGURACIÓN CORS
   // =========================================================
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS');
+
+  /*
+   * Por defecto mantenemos CORS abierto para NO romper
+   * configuraciones existentes.
+   *
+   * Si defines ALLOWED_ORIGIN en las variables de entorno,
+   * se restringirá al dominio indicado.
+   */
+  const allowedOrigin =
+    process.env.ALLOWED_ORIGIN || '*';
+
+  res.setHeader(
+    'Access-Control-Allow-Origin',
+    allowedOrigin
+  );
+
+  res.setHeader(
+    'Access-Control-Allow-Methods',
+    'GET,OPTIONS'
+  );
+
   res.setHeader(
     'Access-Control-Allow-Headers',
-    'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version'
+    'Accept, Content-Type'
   );
+
+  /*
+   * No usamos Access-Control-Allow-Credentials con "*".
+   */
+  res.setHeader(
+    'Vary',
+    'Origin'
+  );
+
+  // =========================================================
+  // CABECERAS DE SEGURIDAD
+  // =========================================================
+
+  res.setHeader(
+    'X-Content-Type-Options',
+    'nosniff'
+  );
+
+  res.setHeader(
+    'Referrer-Policy',
+    'no-referrer'
+  );
+
+  /*
+   * Evita caché del endpoint por navegadores/proxies.
+   * Nuestra caché interna se controla abajo.
+   */
   res.setHeader(
     'Cache-Control',
     'no-store, no-cache, must-revalidate, proxy-revalidate'
   );
-  res.setHeader('X-Content-Type-Options', 'nosniff');
-  res.setHeader('Referrer-Policy', 'no-referrer');
 
   // =========================================================
-  // CORS PREFLIGHT
+  // OPTIONS
   // =========================================================
+
   if (req.method === 'OPTIONS') {
     res.status(204).end();
     return;
   }
 
   // =========================================================
-  // SOLO PERMITIR GET
+  // SOLO GET
   // =========================================================
+
   if (req.method !== 'GET') {
-    res.setHeader('Allow', 'GET, OPTIONS');
+    res.setHeader(
+      'Allow',
+      'GET, OPTIONS'
+    );
 
     res.status(405).json({
-      error: 'Método no permitido',
-      method: req.method
+      error: 'Método no permitido'
     });
 
     return;
@@ -41,36 +89,47 @@ export default async function handler(req, res) {
   // CONFIGURACIÓN
   // =========================================================
 
-  // Puedes cambiar esta URL mediante una variable de entorno.
   const ATS_API_URL =
-    process.env.ATS_API_URL || 'http://159.89.51.54/status';
+    process.env.ATS_API_URL ||
+    'http://159.89.51.54/status';
 
-  // Tiempo máximo de espera del servidor ATS.
   const ATS_TIMEOUT_MS =
-    Number(process.env.ATS_TIMEOUT_MS) || 8000;
+    toPositiveNumber(
+      process.env.ATS_TIMEOUT_MS,
+      8000
+    );
 
-  // Tiempo durante el cual reutilizamos una respuesta válida.
   const CACHE_TTL_MS =
-    Number(process.env.ATS_CACHE_TTL_MS) || 5000;
+    toPositiveNumber(
+      process.env.ATS_CACHE_TTL_MS,
+      5000
+    );
 
-  // Tiempo máximo que permitimos utilizar una respuesta antigua
-  // cuando el ATS temporalmente no responde.
   const STALE_MAX_AGE_MS =
-    Number(process.env.ATS_STALE_MAX_AGE_MS) || 30000;
+    toPositiveNumber(
+      process.env.ATS_STALE_MAX_AGE_MS,
+      30000
+    );
 
-  // Protección básica contra demasiadas peticiones.
-  // En serverless funciona por instancia caliente.
   const RATE_LIMIT_WINDOW_MS =
-    Number(process.env.STATUS_RATE_WINDOW_MS) || 60000;
+    toPositiveNumber(
+      process.env.STATUS_RATE_WINDOW_MS,
+      60000
+    );
 
   const RATE_LIMIT_MAX =
-    Number(process.env.STATUS_RATE_MAX) || 30;
+    toPositiveNumber(
+      process.env.STATUS_RATE_MAX,
+      30
+    );
 
   // =========================================================
-  // ESTADO EN MEMORIA DE LA INSTANCIA
+  // ESTADO GLOBAL DE LA INSTANCIA
   // =========================================================
 
-  if (!globalThis.__ECUASERVER_STATUS_STATE) {
+  if (
+    !globalThis.__ECUASERVER_STATUS_STATE
+  ) {
     globalThis.__ECUASERVER_STATUS_STATE = {
       cache: {
         data: null,
@@ -78,68 +137,147 @@ export default async function handler(req, res) {
         atsResponseTimeMs: null
       },
 
-      rateLimits: new Map()
+      rateLimits: new Map(),
+
+      inFlightRequest: null
     };
   }
 
-  const state = globalThis.__ECUASERVER_STATUS_STATE;
-  const now = Date.now();
+  const state =
+    globalThis.__ECUASERVER_STATUS_STATE;
+
+  const now =
+    Date.now();
 
   // =========================================================
-  // IDENTIFICAR IP DEL CLIENTE
+  // FORCE REFRESH
   // =========================================================
 
-  const forwardedFor = req.headers['x-forwarded-for'];
-  const realIp = req.headers['x-real-ip'];
-  const cfConnectingIp = req.headers['cf-connecting-ip'];
+  /*
+   * El HTML utiliza:
+   *
+   * /api/status?force=1
+   *
+   * cuando el usuario pulsa "Actualizar ahora".
+   *
+   * De esta forma realmente saltamos la caché.
+   */
+  const forceRefresh =
+    String(
+      req.query?.force || ''
+    ) === '1';
 
-  const clientIp = String(
-    cfConnectingIp ||
-      realIp ||
-      (
-        typeof forwardedFor === 'string'
-          ? forwardedFor.split(',')[0].trim()
-          : ''
-      ) ||
-      'unknown'
-  );
+  // =========================================================
+  // IDENTIFICAR CLIENTE
+  // =========================================================
+
+  const forwardedFor =
+    req.headers[
+      'x-forwarded-for'
+    ];
+
+  const realIp =
+    req.headers[
+      'x-real-ip'
+    ];
+
+  const cfConnectingIp =
+    req.headers[
+      'cf-connecting-ip'
+    ];
+
+  let clientIp =
+    'unknown';
+
+  if (
+    typeof cfConnectingIp ===
+    'string' &&
+    cfConnectingIp.trim()
+  ) {
+    clientIp =
+      cfConnectingIp.trim();
+
+  } else if (
+    typeof realIp ===
+    'string' &&
+    realIp.trim()
+  ) {
+    clientIp =
+      realIp.trim();
+
+  } else if (
+    typeof forwardedFor ===
+    'string' &&
+    forwardedFor.trim()
+  ) {
+    clientIp =
+      forwardedFor
+        .split(',')[0]
+        .trim();
+  }
 
   // =========================================================
   // RATE LIMIT
   // =========================================================
 
-  const existingLimit = state.rateLimits.get(clientIp);
+  cleanupRateLimits(
+    state,
+    now,
+    RATE_LIMIT_WINDOW_MS
+  );
+
+  const existingLimit =
+    state.rateLimits.get(
+      clientIp
+    );
 
   if (
     !existingLimit ||
-    now - existingLimit.startedAt >= RATE_LIMIT_WINDOW_MS
+    now -
+      existingLimit.startedAt >=
+      RATE_LIMIT_WINDOW_MS
   ) {
-    state.rateLimits.set(clientIp, {
-      startedAt: now,
-      count: 1
-    });
+    state.rateLimits.set(
+      clientIp,
+      {
+        startedAt: now,
+        count: 1
+      }
+    );
+
   } else {
     existingLimit.count += 1;
 
-    if (existingLimit.count > RATE_LIMIT_MAX) {
-      const retryAfter = Math.max(
-        1,
-        Math.ceil(
-          (
-            RATE_LIMIT_WINDOW_MS -
-            (now - existingLimit.startedAt)
-          ) / 1000
+    if (
+      existingLimit.count >
+      RATE_LIMIT_MAX
+    ) {
+      const retryAfter =
+        Math.max(
+          1,
+          Math.ceil(
+            (
+              RATE_LIMIT_WINDOW_MS -
+              (
+                now -
+                existingLimit.startedAt
+              )
+            ) / 1000
+          )
+        );
+
+      res.setHeader(
+        'Retry-After',
+        String(
+          retryAfter
         )
       );
 
       res.setHeader(
-        'Retry-After',
-        String(retryAfter)
-      );
-
-      res.setHeader(
         'X-RateLimit-Limit',
-        String(RATE_LIMIT_MAX)
+        String(
+          RATE_LIMIT_MAX
+        )
       );
 
       res.setHeader(
@@ -148,9 +286,10 @@ export default async function handler(req, res) {
       );
 
       res.status(429).json({
-        error: 'Demasiadas solicitudes',
+        error:
+          'Demasiadas solicitudes',
         detail:
-          `Espera aproximadamente ${retryAfter} segundos antes de volver a consultar.`
+          `Espera aproximadamente ${retryAfter} segundos.`
       });
 
       return;
@@ -158,44 +297,48 @@ export default async function handler(req, res) {
   }
 
   const currentLimit =
-    state.rateLimits.get(clientIp);
+    state.rateLimits.get(
+      clientIp
+    );
 
-  const remaining = Math.max(
-    0,
-    RATE_LIMIT_MAX - currentLimit.count
-  );
+  const remaining =
+    Math.max(
+      0,
+      RATE_LIMIT_MAX -
+        currentLimit.count
+    );
 
   res.setHeader(
     'X-RateLimit-Limit',
-    String(RATE_LIMIT_MAX)
+    String(
+      RATE_LIMIT_MAX
+    )
   );
 
   res.setHeader(
     'X-RateLimit-Remaining',
-    String(remaining)
+    String(
+      remaining
+    )
   );
 
-  // Evita que la tabla de IPs crezca indefinidamente.
-  if (state.rateLimits.size > 1000) {
-    for (
-      const [ip, limit]
-      of state.rateLimits.entries()
-    ) {
-      if (
-        now - limit.startedAt >= RATE_LIMIT_WINDOW_MS
-      ) {
-        state.rateLimits.delete(ip);
-      }
-    }
-  }
-
   // =========================================================
-  // CACHÉ FRESCA
+  // CACHÉ
   // =========================================================
 
-  if (
+  const cacheIsFresh =
     state.cache.data &&
-    now - state.cache.cachedAt < CACHE_TTL_MS
+    now -
+      state.cache.cachedAt <
+      CACHE_TTL_MS;
+
+  /*
+   * Si NO se pidió refresh manual y existe
+   * una caché todavía válida, la usamos.
+   */
+  if (
+    !forceRefresh &&
+    cacheIsFresh
   ) {
     res.setHeader(
       'X-API-Cache',
@@ -208,13 +351,19 @@ export default async function handler(req, res) {
         {
           stale: false,
           cache: 'HIT',
+
           cachedAt:
             new Date(
               state.cache.cachedAt
             ).toISOString(),
 
+          cacheAgeMs:
+            Date.now() -
+            state.cache.cachedAt,
+
           atsResponseTimeMs:
-            state.cache.atsResponseTimeMs,
+            state.cache
+              .atsResponseTimeMs,
 
           proxyResponseTimeMs: 0
         }
@@ -225,126 +374,121 @@ export default async function handler(req, res) {
   }
 
   // =========================================================
-  // CONSULTAR API ATS
+  // EVITAR PETICIONES ATS DUPLICADAS
   // =========================================================
 
-  const fetchStartedAt = Date.now();
+  /*
+   * Si dos usuarios llegan al mismo tiempo,
+   * compartimos la misma consulta ATS.
+   */
+  if (
+    state.inFlightRequest
+  ) {
+    try {
+      const result =
+        await state.inFlightRequest;
 
-  const controller =
-    new AbortController();
+      res.setHeader(
+        'X-API-Cache',
+        'IN-FLIGHT'
+      );
 
-  const timeout =
-    setTimeout(
-      () => controller.abort(),
+      res.status(200).json(
+        addMeta(
+          result.data,
+          {
+            stale: false,
+            cache: 'IN-FLIGHT',
+
+            cachedAt:
+              new Date(
+                result.cachedAt
+              ).toISOString(),
+
+            cacheAgeMs: 0,
+
+            atsResponseTimeMs:
+              result.atsResponseTimeMs,
+
+            proxyResponseTimeMs:
+              result.proxyResponseTimeMs
+          }
+        )
+      );
+
+      return;
+
+    } catch (error) {
+      /*
+       * La petición compartida falló.
+       * La siguiente sección manejará el
+       * último dato disponible.
+       */
+    }
+  }
+
+  // =========================================================
+  // CREAR CONSULTA ATS
+  // =========================================================
+
+  const requestStartedAt =
+    Date.now();
+
+  state.inFlightRequest =
+    fetchATS(
+      ATS_API_URL,
       ATS_TIMEOUT_MS
     );
 
   try {
-    const response = await fetch(
-      ATS_API_URL,
-      {
-        method: 'GET',
+    const result =
+      await state.inFlightRequest;
 
-        headers: {
-          Accept:
-            'application/json, text/plain;q=0.9, */*;q=0.8'
-        },
-
-        cache: 'no-store',
-
-        signal: controller.signal
-      }
-    );
-
-    const atsResponseTimeMs =
-      Date.now() - fetchStartedAt;
-
-    // =======================================================
-    // VALIDAR HTTP
-    // =======================================================
-
-    if (!response.ok) {
-      throw new Error(
-        `La API ATS respondió con HTTP ${response.status} ${response.statusText}`
-      );
-    }
-
-    // =======================================================
-    // LEER RESPUESTA
-    // =======================================================
-
-    const rawBody =
-      await response.text();
-
-    let data;
-
-    try {
-      data = JSON.parse(rawBody);
-    } catch {
-      throw new Error(
-        'La API ATS no devolvió un JSON válido.'
-      );
-    }
-
-    // =======================================================
-    // VALIDAR ESTRUCTURA
-    // =======================================================
-
-    if (
-      !data ||
-      typeof data !== 'object' ||
-      Array.isArray(data)
-    ) {
-      throw new Error(
-        'La API ATS devolvió una estructura JSON inválida.'
-      );
-    }
-
-    // =======================================================
-    // GUARDAR RESPUESTA VÁLIDA
-    // =======================================================
-
-    clearTimeout(timeout);
-
+    /*
+     * Guardamos solamente datos válidos.
+     */
     state.cache = {
-      data,
+      data:
+        result.data,
 
       cachedAt:
         Date.now(),
 
-      atsResponseTimeMs
+      atsResponseTimeMs:
+        result.atsResponseTimeMs
     };
 
-    // =======================================================
-    // TIEMPO TOTAL DEL PROXY
-    // =======================================================
-
     const proxyResponseTimeMs =
-      Date.now() - fetchStartedAt;
+      Date.now() -
+      requestStartedAt;
 
     res.setHeader(
       'X-API-Cache',
-      'MISS'
+      forceRefresh
+        ? 'FORCED'
+        : 'MISS'
     );
-
-    // =======================================================
-    // DEVOLVER DATOS
-    // =======================================================
 
     res.status(200).json(
       addMeta(
-        data,
+        result.data,
         {
           stale: false,
 
-          cache: 'MISS',
+          cache:
+            forceRefresh
+              ? 'FORCED'
+              : 'MISS',
 
           cachedAt:
             new Date(
               state.cache.cachedAt
             ).toISOString(),
 
-          atsResponseTimeMs,
+          cacheAgeMs: 0,
+
+          atsResponseTimeMs:
+            result.atsResponseTimeMs,
 
           proxyResponseTimeMs
         }
@@ -352,13 +496,9 @@ export default async function handler(req, res) {
     );
 
   } catch (error) {
-    clearTimeout(timeout);
-
-    const errorDetail =
-      getErrorDetail(
-        error,
-        ATS_TIMEOUT_MS
-      );
+    // =======================================================
+    // CONSULTA ATS FALLIDA
+    // =======================================================
 
     const cacheAgeMs =
       state.cache.data
@@ -366,13 +506,14 @@ export default async function handler(req, res) {
           state.cache.cachedAt
         : Number.POSITIVE_INFINITY;
 
-    // =======================================================
-    // UTILIZAR ÚLTIMO DATO VÁLIDO
-    // =======================================================
-
+    /*
+     * Si tenemos un dato reciente, podemos
+     * devolverlo como STALE.
+     */
     if (
       state.cache.data &&
-      cacheAgeMs <= STALE_MAX_AGE_MS
+      cacheAgeMs <=
+        STALE_MAX_AGE_MS
     ) {
       res.setHeader(
         'X-API-Cache',
@@ -395,14 +536,21 @@ export default async function handler(req, res) {
             cacheAgeMs,
 
             atsResponseTimeMs:
-              state.cache.atsResponseTimeMs,
+              state.cache
+                .atsResponseTimeMs,
 
             proxyResponseTimeMs:
               Date.now() -
-              fetchStartedAt,
+              requestStartedAt,
 
-            apiError:
-              errorDetail
+            /*
+             * Solo código genérico.
+             * No exponemos detalles internos.
+             */
+            errorCode:
+              getErrorCode(
+                error
+              )
           }
         )
       );
@@ -411,7 +559,7 @@ export default async function handler(req, res) {
     }
 
     // =======================================================
-    // SIN DATOS DISPONIBLES
+    // SIN DATOS VÁLIDOS DISPONIBLES
     // =======================================================
 
     res.setHeader(
@@ -421,10 +569,7 @@ export default async function handler(req, res) {
 
     res.status(502).json({
       error:
-        'Error al consultar la API del servidor ATS',
-
-      detail:
-        errorDetail,
+        'No se pudo actualizar el estado del servidor.',
 
       serverRunning:
         false,
@@ -456,29 +601,164 @@ export default async function handler(req, res) {
 
         proxyResponseTimeMs:
           Date.now() -
-          fetchStartedAt
+          requestStartedAt,
+
+        errorCode:
+          getErrorCode(
+            error
+          ),
+
+        generatedAt:
+          new Date().toISOString()
       }
     });
+
+  } finally {
+    /*
+     * Solamente limpiamos la promesa si
+     * sigue siendo nuestra petición.
+     */
+    state.inFlightRequest =
+      null;
   }
 }
 
 
 // =========================================================
-// AGREGAR METADATOS SIN BORRAR LOS DATOS ATS
+// CONSULTAR ATS
 // =========================================================
 
-function addMeta(data, meta) {
+async function fetchATS(
+  url,
+  timeoutMs
+) {
+  const startedAt =
+    Date.now();
+
+  const controller =
+    new AbortController();
+
+  const timeout =
+    setTimeout(
+      () => {
+        controller.abort();
+      },
+      timeoutMs
+    );
+
+  try {
+    const response =
+      await fetch(
+        url,
+        {
+          method: 'GET',
+
+          headers: {
+            Accept:
+              'application/json, text/plain;q=0.9, */*;q=0.8'
+          },
+
+          cache:
+            'no-store',
+
+          signal:
+            controller.signal
+        }
+      );
+
+    const atsResponseTimeMs =
+      Date.now() -
+      startedAt;
+
+    if (
+      !response.ok
+    ) {
+      throw new Error(
+        `ATS_HTTP_${response.status}`
+      );
+    }
+
+    const raw =
+      await response.text();
+
+    let data;
+
+    try {
+      data =
+        JSON.parse(
+          raw
+        );
+    } catch {
+      throw new Error(
+        'ATS_INVALID_JSON'
+      );
+    }
+
+    if (
+      !data ||
+      typeof data !== 'object' ||
+      Array.isArray(data)
+    ) {
+      throw new Error(
+        'ATS_INVALID_RESPONSE'
+      );
+    }
+
+    return {
+      data,
+
+      atsResponseTimeMs,
+
+      proxyResponseTimeMs:
+        Date.now() -
+        startedAt,
+
+      cachedAt:
+        Date.now()
+    };
+
+  } catch (error) {
+    if (
+      error?.name ===
+      'AbortError'
+    ) {
+      throw new Error(
+        'ATS_TIMEOUT'
+      );
+    }
+
+    throw error;
+
+  } finally {
+    clearTimeout(
+      timeout
+    );
+  }
+}
+
+
+// =========================================================
+// METADATA
+// =========================================================
+
+function addMeta(
+  data,
+  meta
+) {
+  const existingMeta =
+    data &&
+    typeof data.meta === 'object' &&
+    !Array.isArray(
+      data.meta
+    )
+      ? data.meta
+      : {};
+
   return {
     ...data,
 
     meta: {
-      ...(
-        data &&
-        typeof data.meta === 'object' &&
-        !Array.isArray(data.meta)
-          ? data.meta
-          : {}
-      ),
+      ...existingMeta,
 
       ...meta,
 
@@ -490,21 +770,107 @@ function addMeta(data, meta) {
 
 
 // =========================================================
-// FORMATEAR ERRORES
+// ERROR CODE
 // =========================================================
 
-function getErrorDetail(error, timeoutMs) {
-  if (error?.name === 'AbortError') {
-    return (
-      `La API ATS tardó más de ${timeoutMs / 1000} segundos en responder.`
+function getErrorCode(
+  error
+) {
+  const message =
+    String(
+      error?.message || ''
     );
+
+  if (
+    message ===
+    'ATS_TIMEOUT'
+  ) {
+    return 'TIMEOUT';
   }
 
-  if (error?.message) {
-    return error.message;
+  if (
+    message ===
+    'ATS_INVALID_JSON'
+  ) {
+    return 'INVALID_JSON';
   }
 
-  return (
-    'Error desconocido al consultar la API ATS.'
-  );
+  if (
+    message ===
+    'ATS_INVALID_RESPONSE'
+  ) {
+    return 'INVALID_RESPONSE';
+  }
+
+  if (
+    message.startsWith(
+      'ATS_HTTP_'
+    )
+  ) {
+    return 'HTTP_ERROR';
+  }
+
+  return 'ATS_UNAVAILABLE';
+}
+
+
+// =========================================================
+// LIMPIAR RATE LIMIT
+// =========================================================
+
+function cleanupRateLimits(
+  state,
+  now,
+  windowMs
+) {
+  /*
+   * Evita que el Map crezca indefinidamente
+   * dentro de una instancia serverless caliente.
+   */
+  if (
+    state.rateLimits.size <
+    500
+  ) {
+    return;
+  }
+
+  for (
+    const [
+      ip,
+      entry
+    ]
+    of state.rateLimits.entries()
+  ) {
+    if (
+      now -
+        entry.startedAt >=
+      windowMs
+    ) {
+      state.rateLimits.delete(
+        ip
+      );
+    }
+  }
+}
+
+
+// =========================================================
+// NÚMERO POSITIVO
+// =========================================================
+
+function toPositiveNumber(
+  value,
+  fallback
+) {
+  const number =
+    Number(value);
+
+  if (
+    !Number.isFinite(number) ||
+    number <= 0
+  ) {
+    return fallback;
+  }
+
+  return number;
 }
