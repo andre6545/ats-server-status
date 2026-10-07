@@ -10,7 +10,7 @@
 
   <meta
     name="theme-color"
-    content="#0f172a"
+    content="#08111f"
   >
 
   <meta
@@ -18,47 +18,46 @@
     content="Estado en tiempo real del servidor ECUASERVER +593 para American Truck Simulator."
   >
 
+  <title>ECUASERVER +593 | Centro de Operaciones</title>
+
   <link
     rel="icon"
+    href="./assets/favicon.svg"
     type="image/svg+xml"
-    href="/favicon.svg"
   >
-
-  <link
-    rel="manifest"
-    href="/manifest.webmanifest"
-  >
-
-  <title>ECUASERVER +593 | Estado del Servidor</title>
 
   <style>
     :root {
-      --bg: #0f172a;
-      --bg-secondary: #111827;
-      --card: #1e293b;
-      --card-dark: #111827;
-      --border: #334155;
+      --bg: #06101c;
+      --bg-2: #0b1726;
 
-      --text: #f8fafc;
-      --text-secondary: #94a3b8;
-      --text-muted: #64748b;
+      --panel: rgba(13, 25, 41, 0.88);
+      --panel-strong: #101f32;
+      --panel-soft: rgba(18, 34, 54, 0.72);
 
-      --accent: #4ea8df;
-      --accent-dark: #376f96;
+      --line: rgba(148, 163, 184, 0.18);
+      --line-strong: rgba(148, 163, 184, 0.30);
 
-      --online: #4ade80;
-      --online-bg: rgba(74, 222, 128, 0.10);
+      --text: #f5f7fb;
+      --muted: #94a5bb;
+      --muted-2: #6f8198;
 
-      --offline: #f87171;
-      --offline-bg: rgba(248, 113, 113, 0.10);
+      --blue: #4db5ff;
+      --blue-2: #1677c8;
+      --cyan: #67e8f9;
 
-      --warning: #facc15;
-      --warning-bg: rgba(250, 204, 21, 0.10);
+      --green: #38d996;
+      --red: #ff6678;
+      --amber: #ffc857;
 
       --discord: #5865f2;
       --whatsapp: #25d366;
 
-      --shadow: 0 10px 30px rgba(0, 0, 0, 0.20);
+      --shadow: 0 30px 90px rgba(0, 0, 0, 0.45);
+
+      --radius-xl: 28px;
+      --radius-lg: 20px;
+      --radius-md: 14px;
     }
 
     * {
@@ -66,494 +65,828 @@
     }
 
     html {
-      background: var(--bg);
+      scroll-behavior: smooth;
     }
 
     body {
       margin: 0;
-      padding: 24px 16px 40px;
       min-height: 100vh;
-
-      background:
-        linear-gradient(
-          180deg,
-          #0f172a 0%,
-          #172033 100%
-        );
 
       color: var(--text);
 
       font-family:
+        Inter,
+        ui-sans-serif,
+        system-ui,
         -apple-system,
         BlinkMacSystemFont,
         "Segoe UI",
-        Roboto,
-        Helvetica,
-        Arial,
         sans-serif;
 
-      -webkit-font-smoothing: antialiased;
-      text-rendering: optimizeLegibility;
+      background:
+        radial-gradient(
+          circle at 15% 10%,
+          rgba(77, 181, 255, 0.13),
+          transparent 30%
+        ),
+        radial-gradient(
+          circle at 90% 25%,
+          rgba(255, 200, 87, 0.09),
+          transparent 28%
+        ),
+        linear-gradient(
+          160deg,
+          var(--bg),
+          var(--bg-2) 55%,
+          #06111e
+        );
     }
 
+    a,
     button,
     input {
       font: inherit;
     }
 
-    button {
+    a {
+      color: inherit;
+    }
+
+    button,
+    a {
       -webkit-tap-highlight-color: transparent;
     }
 
-    .container {
-      width: 100%;
-      max-width: 550px;
-      margin: 0 auto;
+    button:focus-visible,
+    a:focus-visible,
+    input:focus-visible {
+      outline: 3px solid rgba(103, 232, 249, 0.45);
+      outline-offset: 3px;
     }
 
-    /* ==============================
-       HEADER
-    ============================== */
+    /* =========================================
+       CONTENEDOR PRINCIPAL
+    ========================================= */
 
-    .header {
-      background: var(--card);
+    .page-shell {
+      width: min(100%, 1120px);
+      margin: 0 auto;
+      padding: 22px;
+    }
 
-      border: 1px solid var(--border);
-      border-radius: 16px 16px 0 0;
+    .dashboard {
+      overflow: hidden;
 
-      padding: 24px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-xl);
+
+      background:
+        linear-gradient(
+          180deg,
+          rgba(13, 25, 41, 0.96),
+          rgba(8, 18, 31, 0.97)
+        );
 
       box-shadow: var(--shadow);
+
+      backdrop-filter: blur(18px);
     }
 
-    .header-top {
+    /* =========================================
+       HERO
+    ========================================= */
+
+    .hero {
+      position: relative;
+
+      min-height: 330px;
+
       display: flex;
-      align-items: flex-start;
-      justify-content: space-between;
+      align-items: flex-end;
 
-      gap: 16px;
+      overflow: hidden;
+
+      border-bottom: 1px solid var(--line);
+
+      background:
+        linear-gradient(
+          90deg,
+          rgba(4, 12, 21, 0.98) 0%,
+          rgba(4, 12, 21, 0.78) 43%,
+          rgba(4, 12, 21, 0.20) 100%
+        ),
+        linear-gradient(
+          180deg,
+          rgba(4, 12, 21, 0.15),
+          rgba(4, 12, 21, 0.82)
+        ),
+        url("./assets/hero-truck.svg") center / cover no-repeat;
     }
 
-    .server-title {
-      min-width: 0;
+    .hero::after {
+      content: "";
+
+      position: absolute;
+      inset: auto 0 0;
+
+      height: 70px;
+
+      background:
+        linear-gradient(
+          transparent,
+          rgba(8, 18, 31, 0.98)
+        );
+
+      pointer-events: none;
     }
 
-    #server-name {
-      margin: 0;
+    .hero-content {
+      position: relative;
+      z-index: 2;
 
-      font-size: 28px;
-      line-height: 1.15;
-      font-weight: 700;
+      width: 100%;
 
-      color: var(--text);
-
-      overflow-wrap: anywhere;
+      padding: 34px;
     }
 
-    #game-name {
-      margin-top: 8px;
-
-      color: var(--text-secondary);
-
-      font-size: 16px;
-      line-height: 1.4;
-    }
-
-    /* ==============================
-       STATUS
-    ============================== */
-
-    .status-badge {
-      flex-shrink: 0;
-
+    .eyebrow {
       display: inline-flex;
       align-items: center;
       gap: 8px;
 
-      padding: 8px 14px;
+      padding: 7px 11px;
 
+      border: 1px solid rgba(103, 232, 249, 0.24);
       border-radius: 999px;
 
-      border: 1px solid rgba(78, 168, 223, 0.35);
+      background: rgba(6, 16, 28, 0.62);
 
-      background: rgba(78, 168, 223, 0.08);
+      color: #a9e9f4;
 
-      color: var(--accent);
+      font-size: 0.72rem;
+      font-weight: 800;
 
-      font-size: 14px;
-      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+
+      backdrop-filter: blur(10px);
+    }
+
+    .hero-title {
+      margin: 15px 0 7px;
+
+      max-width: 700px;
+
+      font-size: clamp(2rem, 5vw, 4rem);
+
+      line-height: 0.98;
+
+      letter-spacing: -0.045em;
+    }
+
+    .hero-subtitle {
+      max-width: 680px;
+
+      margin: 0;
+
+      color: #b5c2d3;
+
+      font-size: clamp(0.95rem, 2vw, 1.1rem);
+
+      line-height: 1.55;
+    }
+
+    .hero-status {
+      position: absolute;
+
+      z-index: 3;
+
+      top: 28px;
+      right: 28px;
+    }
+
+    /* =========================================
+       STATUS
+    ========================================= */
+
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+
+      padding: 10px 14px;
+
+      border: 1px solid rgba(56, 217, 150, 0.28);
+      border-radius: 999px;
+
+      background: rgba(9, 31, 28, 0.78);
+
+      color: var(--green);
+
+      font-size: 0.84rem;
+      font-weight: 800;
+
+      box-shadow:
+        0 8px 24px rgba(0, 0, 0, 0.18);
+
+      backdrop-filter: blur(12px);
+    }
+
+    .status-badge.offline {
+      border-color: rgba(255, 102, 120, 0.30);
+
+      background: rgba(46, 15, 23, 0.78);
+
+      color: var(--red);
+    }
+
+    .status-badge.checking {
+      border-color: rgba(255, 200, 87, 0.30);
+
+      background: rgba(47, 35, 10, 0.78);
+
+      color: var(--amber);
+    }
+
+    .status-dot {
+      width: 9px;
+      height: 9px;
+
+      border-radius: 50%;
+
+      background: currentColor;
+
+      box-shadow:
+        0 0 0 5px rgba(56, 217, 150, 0.08);
+
+      animation: pulse 1.8s infinite;
+    }
+
+    .offline .status-dot {
+      box-shadow: none;
+      animation: none;
+    }
+
+    .checking .status-dot {
+      animation: none;
+    }
+
+    @keyframes pulse {
+      0%,
+      100% {
+        box-shadow:
+          0 0 0 4px rgba(56, 217, 150, 0.08);
+      }
+
+      50% {
+        box-shadow:
+          0 0 0 9px rgba(56, 217, 150, 0);
+      }
+    }
+
+    /* =========================================
+       CONTENIDO
+    ========================================= */
+
+    .main {
+      padding: 26px;
+    }
+
+    .top-grid {
+      display: grid;
+
+      grid-template-columns:
+        1.35fr
+        0.65fr;
+
+      gap: 18px;
+
+      margin-bottom: 18px;
+    }
+
+    .panel {
+      border: 1px solid var(--line);
+
+      border-radius: var(--radius-lg);
+
+      background:
+        linear-gradient(
+          145deg,
+          rgba(18, 34, 54, 0.92),
+          rgba(10, 21, 35, 0.94)
+        );
+
+      box-shadow:
+        0 15px 40px rgba(0, 0, 0, 0.14);
+    }
+
+    /* =========================================
+       PANEL STEAM
+    ========================================= */
+
+    .join-panel {
+      position: relative;
+
+      overflow: hidden;
+
+      padding: 24px;
+    }
+
+    .join-panel::before {
+      content: "🚛";
+
+      position: absolute;
+
+      right: 22px;
+      bottom: -17px;
+
+      font-size: 6rem;
+
+      opacity: 0.08;
+
+      transform: rotate(-7deg);
+
+      pointer-events: none;
+    }
+
+    .panel-kicker {
+      margin: 0 0 7px;
+
+      color: var(--cyan);
+
+      font-size: 0.72rem;
+      font-weight: 800;
+
+      letter-spacing: 0.13em;
+
+      text-transform: uppercase;
+    }
+
+    .join-title {
+      margin: 0;
+
+      font-size: 1.45rem;
+
+      letter-spacing: -0.02em;
+    }
+
+    .join-description {
+      margin: 7px 0 19px;
+
+      color: var(--muted);
+
+      font-size: 0.92rem;
+
+      line-height: 1.5;
+    }
+
+    .btn-steam-join {
+      position: relative;
+
+      z-index: 2;
+
+      display: inline-flex;
+
+      align-items: center;
+      justify-content: center;
+
+      gap: 10px;
+
+      width: 100%;
+
+      min-height: 52px;
+
+      padding: 13px 18px;
+
+      border: 1px solid rgba(255, 255, 255, 0.13);
+
+      border-radius: 13px;
+
+      background:
+        linear-gradient(
+          135deg,
+          #2b9dff,
+          #1265b8
+        );
+
+      color: #fff;
+
+      text-decoration: none;
+
+      font-weight: 850;
+
+      box-shadow:
+        0 12px 28px rgba(18, 101, 184, 0.28);
+
+      transition:
+        transform 0.18s ease,
+        filter 0.18s ease;
+    }
+
+    .btn-steam-join:hover {
+      transform: translateY(-2px);
+
+      filter: brightness(1.08);
+    }
+
+    .btn-steam-join.disabled {
+      background: #233247;
+
+      color: #718198;
+
+      box-shadow: none;
+
+      pointer-events: none;
+    }
+
+    /* =========================================
+       ESTADÍSTICAS RÁPIDAS
+    ========================================= */
+
+    .quick-stats {
+      display: grid;
+
+      grid-template-columns:
+        repeat(2, minmax(0, 1fr));
+
+      gap: 12px;
+
+      padding: 16px;
+    }
+
+    .stat {
+      min-width: 0;
+
+      padding: 15px;
+
+      border: 1px solid var(--line);
+
+      border-radius: 15px;
+
+      background:
+        rgba(4, 12, 21, 0.42);
+    }
+
+    .stat-label {
+      color: var(--muted-2);
+
+      font-size: 0.68rem;
+      font-weight: 800;
+
+      letter-spacing: 0.1em;
+
+      text-transform: uppercase;
+    }
+
+    .stat-value {
+      margin-top: 7px;
+
+      overflow: hidden;
+
+      color: var(--text);
+
+      font-size: 1.08rem;
+      font-weight: 800;
+
+      text-overflow: ellipsis;
 
       white-space: nowrap;
     }
 
-    .status-dot {
-      width: 10px;
-      height: 10px;
+    /* =========================================
+       CAPACIDAD + JUGADORES
+    ========================================= */
 
-      border-radius: 50%;
+    .section-grid {
+      display: grid;
 
-      background: var(--accent);
+      grid-template-columns:
+        1fr
+        1fr;
 
-      flex-shrink: 0;
+      gap: 18px;
+
+      margin-bottom: 18px;
     }
 
-    .status-badge.online {
-      color: var(--online);
-      border-color: rgba(74, 222, 128, 0.35);
-      background: var(--online-bg);
+    .section-card {
+      padding: 22px;
     }
 
-    .status-badge.online .status-dot {
-      background: var(--online);
-      animation: statusPulse 1.8s infinite;
-    }
-
-    .status-badge.offline {
-      color: var(--offline);
-      border-color: rgba(248, 113, 113, 0.35);
-      background: var(--offline-bg);
-    }
-
-    .status-badge.offline .status-dot {
-      background: var(--offline);
-    }
-
-    .status-badge.warning {
-      color: var(--warning);
-      border-color: rgba(250, 204, 21, 0.35);
-      background: var(--warning-bg);
-    }
-
-    .status-badge.warning .status-dot {
-      background: var(--warning);
-    }
-
-    @keyframes statusPulse {
-      0% {
-        box-shadow: 0 0 0 0 rgba(74, 222, 128, 0.5);
-      }
-
-      70% {
-        box-shadow: 0 0 0 7px rgba(74, 222, 128, 0);
-      }
-
-      100% {
-        box-shadow: 0 0 0 0 rgba(74, 222, 128, 0);
-      }
-    }
-
-    /* ==============================
-       HEADER INFO
-    ============================== */
-
-    .header-info {
+    .section-heading {
       display: flex;
-      align-items: center;
+
+      align-items: flex-start;
       justify-content: space-between;
 
-      gap: 12px;
+      gap: 15px;
 
-      margin-top: 14px;
-      padding-top: 14px;
-
-      border-top: 1px solid var(--border);
-
-      color: var(--text-secondary);
-
-      font-size: 13px;
+      margin-bottom: 17px;
     }
 
-    .last-update {
-      display: inline-flex;
-      align-items: center;
-      gap: 7px;
-    }
-
-    .update-indicator {
-      width: 7px;
-      height: 7px;
-
-      border-radius: 50%;
-
-      background: var(--text-muted);
-    }
-
-    .update-indicator.success {
-      background: var(--online);
-    }
-
-    .update-indicator.warning {
-      background: var(--warning);
-    }
-
-    .update-indicator.error {
-      background: var(--offline);
-    }
-
-    /* ==============================
-       CONTENIDO
-    ============================== */
-
-    .content {
-      background: var(--card);
-
-      border: 1px solid var(--border);
-      border-top: 0;
-
-      border-radius: 0 0 16px 16px;
-
-      padding: 24px;
-
-      box-shadow: var(--shadow);
-    }
-
-    /* ==============================
-       STEAM
-    ============================== */
-
-    .steam-button {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-
-      width: 100%;
-      min-height: 72px;
-
-      padding: 16px 20px;
-
-      border: 0;
-      border-radius: 14px;
-
-      background: #334155;
-
-      color: #94a3b8;
-
-      text-decoration: none;
-
-      font-size: 20px;
-      font-weight: 700;
-
-      cursor: pointer;
-
-      transition:
-        transform 0.15s ease,
-        background 0.15s ease,
-        opacity 0.15s ease;
-    }
-
-    .steam-button:hover {
-      background: #3d4c62;
-    }
-
-    .steam-button:active {
-      transform: scale(0.99);
-    }
-
-    .steam-button.enabled {
-      background: var(--accent-dark);
-      color: #ffffff;
-    }
-
-    .steam-button.enabled:hover {
-      background: #4385b2;
-    }
-
-    .steam-button.disabled {
-      cursor: not-allowed;
-      opacity: 0.85;
-    }
-
-    /* ==============================
-       CARDS
-    ============================== */
-
-    .card {
-      margin-top: 24px;
-
-      padding: 24px;
-
-      background: rgba(15, 23, 42, 0.70);
-
-      border: 1px solid var(--border);
-
-      border-radius: 16px;
-    }
-
-    .card-title {
+    .section-heading h2 {
       margin: 0;
 
-      color: var(--text-secondary);
+      font-size: 1.05rem;
 
-      font-size: 22px;
-      font-weight: 600;
+      letter-spacing: -0.01em;
     }
 
-    .section-label {
-      color: var(--text-secondary);
+    .section-heading p {
+      margin: 5px 0 0;
 
-      font-size: 16px;
-      font-weight: 500;
+      color: var(--muted);
 
-      text-transform: uppercase;
-      letter-spacing: 0.04em;
+      font-size: 0.82rem;
     }
 
-    /* ==============================
-       SLOTS
-    ============================== */
+    .count-badge {
+      padding: 6px 9px;
 
-    .slots-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-
-      gap: 12px;
-    }
-
-    .slots-count {
-      color: var(--text);
-
-      font-size: 21px;
-      font-weight: 700;
-    }
-
-    .slots-bar-container {
-      margin-top: 14px;
-
-      width: 100%;
-      height: 15px;
-
-      overflow: hidden;
+      border: 1px solid var(--line);
 
       border-radius: 999px;
 
-      background: #334155;
+      background:
+        rgba(255, 255, 255, 0.035);
+
+      color: var(--muted);
+
+      font-size: 0.72rem;
+      font-weight: 800;
+
+      white-space: nowrap;
     }
 
-    .slots-bar {
-      width: 0%;
+    .slots-number {
+      display: flex;
+
+      align-items: baseline;
+      justify-content: space-between;
+
+      gap: 12px;
+
+      margin-bottom: 11px;
+    }
+
+    .slots-count {
+      font-size: 1.65rem;
+
+      font-weight: 900;
+
+      letter-spacing: -0.04em;
+    }
+
+    .slots-percent {
+      color: var(--muted);
+
+      font-size: 0.82rem;
+      font-weight: 700;
+    }
+
+    .progress-bar-bg {
+      width: 100%;
+
+      height: 13px;
+
+      overflow: hidden;
+
+      border: 1px solid rgba(255, 255, 255, 0.06);
+
+      border-radius: 999px;
+
+      background: #17263a;
+    }
+
+    .progress-bar-fill {
+      width: 0;
+
       height: 100%;
 
       border-radius: inherit;
 
-      background: var(--accent);
+      background:
+        linear-gradient(
+          90deg,
+          #39c6ff,
+          #4db5ff
+        );
 
-      transition: width 0.35s ease;
+      box-shadow:
+        0 0 22px rgba(77, 181, 255, 0.28);
+
+      transition:
+        width 0.45s ease,
+        background 0.25s ease;
     }
 
-    .slots-bar.warning {
-      background: var(--warning);
+    .progress-bar-fill.warning {
+      background:
+        linear-gradient(
+          90deg,
+          #ffc857,
+          #ff9f43
+        );
     }
 
-    .slots-bar.full {
-      background: var(--offline);
+    .progress-bar-fill.full {
+      background:
+        linear-gradient(
+          90deg,
+          #ff6678,
+          #ff3d58
+        );
     }
 
-    .slots-details {
+    .capacity-meta {
       display: grid;
-      gap: 6px;
 
-      margin-top: 14px;
-
-      color: var(--text-secondary);
-
-      font-size: 18px;
-      line-height: 1.45;
-    }
-
-    /* ==============================
-       JUGADORES
-    ============================== */
-
-    .players-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
+      grid-template-columns:
+        repeat(2, 1fr);
 
       gap: 10px;
 
-      margin-bottom: 16px;
+      margin-top: 16px;
     }
 
-    .players-count {
-      color: var(--text-secondary);
+    .mini-metric {
+      padding: 11px 12px;
 
-      font-size: 16px;
+      border-radius: 12px;
+
+      background:
+        rgba(4, 12, 21, 0.40);
+
+      border: 1px solid var(--line);
     }
 
-    .players-list {
-      display: grid;
-      gap: 10px;
+    .mini-metric span {
+      display: block;
+
+      color: var(--muted-2);
+
+      font-size: 0.72rem;
     }
 
-    .player {
+    .mini-metric strong {
+      display: block;
+
+      margin-top: 3px;
+
+      font-size: 0.92rem;
+    }
+
+    /* =========================================
+       LISTA DE JUGADORES
+    ========================================= */
+
+    .players-container {
       display: flex;
+
+      flex-direction: column;
+
+      gap: 8px;
+
+      min-height: 125px;
+
+      max-height: 245px;
+
+      overflow-y: auto;
+
+      padding-right: 3px;
+    }
+
+    .player-item {
+      display: flex;
+
       align-items: center;
 
-      min-height: 44px;
+      gap: 11px;
 
       padding: 10px 12px;
 
-      border-radius: 10px;
+      border: 1px solid var(--line);
 
-      background: rgba(51, 65, 85, 0.38);
+      border-radius: 13px;
 
-      border: 1px solid rgba(51, 65, 85, 0.8);
-
-      color: var(--text);
-
-      overflow-wrap: anywhere;
+      background:
+        rgba(4, 12, 21, 0.42);
     }
 
-    .player-number {
-      width: 28px;
-      flex-shrink: 0;
+    .player-avatar {
+      display: grid;
 
-      color: var(--text-muted);
+      flex: 0 0 34px;
 
-      font-size: 13px;
+      place-items: center;
+
+      width: 34px;
+      height: 34px;
+
+      border-radius: 11px;
+
+      background:
+        linear-gradient(
+          135deg,
+          #1f80c9,
+          #133f66
+        );
+
+      color: #dff5ff;
+
+      font-size: 0.82rem;
+
+      font-weight: 900;
     }
 
     .player-name {
-      font-size: 15px;
+      min-width: 0;
+
+      overflow: hidden;
+
+      font-size: 0.9rem;
+
+      font-weight: 750;
+
+      text-overflow: ellipsis;
+
+      white-space: nowrap;
     }
 
-    .empty-state {
-      color: var(--text-secondary);
+    .player-tag {
+      margin-left: auto;
 
-      font-size: 17px;
-      font-style: italic;
+      color: var(--green);
 
-      padding: 4px 0;
+      font-size: 0.68rem;
+
+      font-weight: 800;
+
+      text-transform: uppercase;
+
+      letter-spacing: 0.08em;
     }
 
-    /* ==============================
-       SESSION
-    ============================== */
+    .player-empty {
+      display: grid;
 
-    .session-description {
-      margin: 10px 0 12px;
+      min-height: 125px;
 
-      color: var(--text-secondary);
+      place-items: center;
 
-      font-size: 18px;
-      line-height: 1.45;
+      padding: 15px;
+
+      border: 1px dashed var(--line-strong);
+
+      border-radius: 14px;
+
+      color: var(--muted);
+
+      text-align: center;
+
+      font-size: 0.86rem;
+    }
+
+    /* =========================================
+       SESSION ID
+    ========================================= */
+
+    .session-panel {
+      margin-bottom: 18px;
+
+      padding: 22px;
+    }
+
+    .session-layout {
+      display: grid;
+
+      grid-template-columns:
+        1fr
+        auto;
+
+      gap: 12px;
+
+      align-items: stretch;
     }
 
     .session-input {
       width: 100%;
-      height: 60px;
+
+      min-width: 0;
+
+      min-height: 48px;
 
       padding: 0 14px;
 
-      border: 1px solid var(--border);
+      border: 1px solid var(--line-strong);
+
       border-radius: 12px;
 
-      background: #0b1224;
+      outline: none;
 
-      color: var(--text);
+      background: #07111e;
 
-      font-size: 17px;
+      color: #dce8f5;
 
       font-family:
         ui-monospace,
@@ -563,1800 +896,1548 @@
         Consolas,
         monospace;
 
-      outline: none;
+      font-size: 0.9rem;
     }
 
-    .session-input:focus {
-      border-color: var(--accent);
+    .btn-copy {
+      min-height: 48px;
 
-      box-shadow:
-        0 0 0 3px rgba(78, 168, 223, 0.12);
-    }
+      padding: 0 19px;
 
-    .copy-button,
-    .command-button,
-    .refresh-button {
-      width: 100%;
-
-      min-height: 54px;
-
-      margin-top: 12px;
-
-      padding: 12px 16px;
-
-      border-radius: 11px;
-
-      cursor: pointer;
-
-      font-weight: 600;
-
-      transition:
-        background 0.15s ease,
-        transform 0.15s ease,
-        opacity 0.15s ease;
-    }
-
-    .copy-button {
-      border: 0;
-
-      background: #3c7299;
-
-      color: #07111c;
-
-      font-size: 18px;
-    }
-
-    .copy-button:hover {
-      background: #4b87b3;
-    }
-
-    .command-button,
-    .refresh-button {
-      border: 1px solid var(--border);
-
-      background: transparent;
-
-      color: var(--text);
-
-      font-size: 16px;
-    }
-
-    .command-button:hover,
-    .refresh-button:hover {
-      background: rgba(51, 65, 85, 0.35);
-    }
-
-    button:active {
-      transform: scale(0.99);
-    }
-
-    button:disabled {
-      cursor: not-allowed;
-      opacity: 0.55;
-    }
-
-    /* ==============================
-       INFORMACIÓN
-    ============================== */
-
-    .info-value {
-      margin-top: 12px;
-
-      color: var(--text);
-
-      font-size: 22px;
-      font-weight: 600;
-
-      overflow-wrap: anywhere;
-    }
-
-    /* ==============================
-       CONEXIÓN
-    ============================== */
-
-    .connection-grid {
-      display: grid;
-      gap: 12px;
-
-      margin-top: 14px;
-    }
-
-    .connection-item {
-      padding: 16px;
-
-      border: 1px solid var(--border);
+      border: 1px solid rgba(103, 232, 249, 0.18);
 
       border-radius: 12px;
 
-      background: #0b1224;
+      background:
+        rgba(77, 181, 255, 0.14);
+
+      color: #aeeaff;
+
+      cursor: pointer;
+
+      font-weight: 850;
+
+      transition:
+        background 0.18s ease,
+        transform 0.18s ease;
     }
 
-    .connection-item-title {
-      color: var(--text-secondary);
+    .btn-copy:hover {
+      background:
+        rgba(77, 181, 255, 0.22);
 
-      font-size: 14px;
-
-      text-transform: uppercase;
-
-      letter-spacing: 0.04em;
+      transform: translateY(-1px);
     }
 
-    .connection-item-value {
-      margin-top: 7px;
+    .session-help {
+      margin: 10px 0 0;
 
-      color: var(--text);
+      color: var(--muted-2);
 
-      font-size: 17px;
-      font-weight: 600;
+      font-size: 0.75rem;
+
+      line-height: 1.5;
     }
 
-    .connection-item-value.online {
-      color: var(--online);
-    }
+    /* =========================================
+       COMUNIDAD
+    ========================================= */
 
-    .connection-item-value.offline {
-      color: var(--offline);
-    }
-
-    .connection-item-value.warning {
-      color: var(--warning);
-    }
-
-    /* ==============================
-       ENLACES
-    ============================== */
-
-    .external-buttons {
+    .community {
       display: grid;
+
+      grid-template-columns:
+        1fr
+        1fr;
+
       gap: 12px;
 
-      margin-top: 24px;
+      margin-bottom: 18px;
     }
 
-    .external-button {
+    .community-button {
       display: flex;
+
       align-items: center;
-      justify-content: center;
 
-      min-height: 52px;
+      gap: 12px;
 
-      padding: 12px 16px;
+      min-height: 62px;
 
-      border-radius: 11px;
+      padding: 12px 15px;
 
-      color: white;
+      border: 1px solid var(--line);
+
+      border-radius: 15px;
 
       text-decoration: none;
 
-      font-weight: 700;
+      transition:
+        transform 0.18s ease,
+        filter 0.18s ease;
+    }
+
+    .community-button:hover {
+      transform: translateY(-2px);
+
+      filter: brightness(1.08);
+    }
+
+    .community-icon {
+      display: grid;
+
+      flex: 0 0 39px;
+
+      place-items: center;
+
+      width: 39px;
+      height: 39px;
+
+      border-radius: 11px;
+
+      font-size: 1.15rem;
+    }
+
+    .community-copy strong {
+      display: block;
+
+      font-size: 0.86rem;
+    }
+
+    .community-copy span {
+      display: block;
+
+      margin-top: 2px;
+
+      color: rgba(255, 255, 255, 0.68);
+
+      font-size: 0.71rem;
     }
 
     .discord {
+      background:
+        linear-gradient(
+          135deg,
+          rgba(88, 101, 242, 0.27),
+          rgba(43, 49, 103, 0.16)
+        );
+    }
+
+    .discord .community-icon {
       background: var(--discord);
     }
 
     .whatsapp {
+      background:
+        linear-gradient(
+          135deg,
+          rgba(37, 211, 102, 0.20),
+          rgba(21, 93, 52, 0.13)
+        );
+    }
+
+    .whatsapp .community-icon {
       background: var(--whatsapp);
-      color: #06140a;
     }
 
-    /* ==============================
-       MENSAJES
-    ============================== */
+    /* =========================================
+       ESTADO DE CONEXIÓN
+    ========================================= */
 
-    .message {
-      min-height: 22px;
-
-      margin-top: 14px;
-
-      color: var(--text-secondary);
-
-      font-size: 14px;
-
-      text-align: center;
+    .connection-panel {
+      padding: 22px;
     }
 
-    .message.success {
-      color: var(--online);
+    .connection-grid {
+      display: grid;
+
+      grid-template-columns:
+        repeat(3, minmax(0, 1fr));
+
+      gap: 12px;
     }
 
-    .message.error {
-      color: var(--offline);
+    .connection-item {
+      padding: 15px;
+
+      border: 1px solid var(--line);
+
+      border-radius: 14px;
+
+      background:
+        rgba(4, 12, 21, 0.40);
     }
 
-    .message.warning {
-      color: var(--warning);
+    .connection-item .label {
+      color: var(--muted-2);
+
+      font-size: 0.69rem;
+
+      font-weight: 800;
+
+      letter-spacing: 0.1em;
+
+      text-transform: uppercase;
     }
 
-    /* ==============================
+    .connection-item .value {
+      margin-top: 6px;
+
+      font-size: 0.9rem;
+
+      font-weight: 800;
+    }
+
+    .connection-item .value.good {
+      color: var(--green);
+    }
+
+    .connection-item .value.bad {
+      color: var(--red);
+    }
+
+    .connection-item .value.warn {
+      color: var(--amber);
+    }
+
+    /* =========================================
        FOOTER
-    ============================== */
+    ========================================= */
 
     .footer {
-      margin-top: 18px;
+      display: flex;
 
-      color: var(--text-muted);
+      align-items: center;
+      justify-content: space-between;
 
-      font-size: 13px;
+      gap: 12px;
 
-      text-align: center;
+      padding: 18px 26px;
 
-      line-height: 1.6;
+      border-top: 1px solid var(--line);
+
+      background:
+        rgba(4, 12, 21, 0.36);
+
+      color: var(--muted-2);
+
+      font-size: 0.74rem;
     }
 
-    /* ==============================
-       ACCESIBILIDAD
-    ============================== */
+    .footer-left {
+      display: flex;
 
-    :focus-visible {
-      outline: 2px solid var(--accent);
-      outline-offset: 3px;
+      align-items: center;
+
+      gap: 8px;
+    }
+
+    .footer-dot {
+      width: 7px;
+      height: 7px;
+
+      border-radius: 50%;
+
+      background: var(--blue);
+    }
+
+    .refresh-button {
+      border: 1px solid var(--line);
+
+      border-radius: 9px;
+
+      padding: 7px 10px;
+
+      background:
+        rgba(255, 255, 255, 0.035);
+
+      color: var(--muted);
+
+      cursor: pointer;
+
+      font-size: 0.72rem;
+
+      font-weight: 750;
+    }
+
+    .refresh-button:hover {
+      color: var(--text);
+
+      background:
+        rgba(255, 255, 255, 0.06);
+    }
+
+    /* =========================================
+       TOAST
+    ========================================= */
+
+    .toast {
+      position: fixed;
+
+      left: 50%;
+      bottom: 22px;
+
+      z-index: 20;
+
+      max-width: calc(100% - 40px);
+
+      padding: 11px 15px;
+
+      border: 1px solid var(--line-strong);
+
+      border-radius: 12px;
+
+      background:
+        rgba(8, 18, 31, 0.94);
+
+      color: var(--text);
+
+      box-shadow:
+        0 16px 45px rgba(0, 0, 0, 0.35);
+
+      opacity: 0;
+
+      pointer-events: none;
+
+      transform:
+        translate(-50%, 14px);
+
+      transition:
+        opacity 0.2s ease,
+        transform 0.2s ease;
+
+      font-size: 0.8rem;
+
+      font-weight: 750;
+
+      backdrop-filter: blur(12px);
+    }
+
+    .toast.show {
+      opacity: 1;
+
+      transform:
+        translate(-50%, 0);
+    }
+
+    /* =========================================
+       ACCESIBILIDAD
+    ========================================= */
+
+    .sr-only {
+      position: absolute;
+
+      width: 1px;
+      height: 1px;
+
+      padding: 0;
+      margin: -1px;
+
+      overflow: hidden;
+
+      clip: rect(0, 0, 0, 0);
+
+      white-space: nowrap;
+
+      border: 0;
     }
   </style>
 </head>
 
 <body>
 
-  <main class="container">
+  <main class="page-shell">
 
-    <header class="header">
+    <section
+      class="dashboard"
+      aria-label="Panel de estado ECUASERVER +593"
+    >
 
-      <div class="header-top">
+      <!-- =====================================
+           HERO
+      ====================================== -->
 
-        <div class="server-title">
+      <header class="hero">
 
-          <h1 id="server-name">
+        <div class="hero-status">
+
+          <div
+            class="status-badge checking"
+            id="status-badge"
+            role="status"
+            aria-live="polite"
+          >
+
+            <span
+              class="status-dot"
+              aria-hidden="true"
+            ></span>
+
+            <span id="status-text">
+              Verificando
+            </span>
+
+          </div>
+
+        </div>
+
+        <div class="hero-content">
+
+          <div class="eyebrow">
+            🇪🇨 ECUASERVER +593 · LIVE STATUS
+          </div>
+
+          <h1
+            class="hero-title"
+            id="server-name"
+          >
             Cargando...
           </h1>
 
-          <div id="game-name">
-            American Truck Simulator
-          </div>
+          <p class="hero-subtitle">
+
+            <span id="game-name">
+              American Truck Simulator
+            </span>
+
+            · Centro de operaciones del servidor,
+            conexión directa y estado de los camioneros
+            en ruta.
+
+          </p>
 
         </div>
 
-        <div
-          id="status-badge"
-          class="status-badge"
-          role="status"
-          aria-live="polite"
+      </header>
+
+
+      <!-- =====================================
+           CONTENIDO
+      ====================================== -->
+
+      <div class="main">
+
+
+        <!-- ===================================
+             ACCESO + ESTADÍSTICAS
+        ==================================== -->
+
+        <div class="top-grid">
+
+          <section
+            class="panel join-panel"
+            aria-labelledby="join-title"
+          >
+
+            <p class="panel-kicker">
+              🎮 Acceso rápido
+            </p>
+
+            <h2
+              class="join-title"
+              id="join-title"
+            >
+              Entra a la carretera
+            </h2>
+
+            <p class="join-description">
+              Conecta directamente desde Steam cuando
+              el servidor esté disponible.
+            </p>
+
+            <a
+              href="steam://run/270880//+connect%2085568392936670275"
+              id="steam-join-btn"
+              class="btn-steam-join"
+              aria-label="Unirse al servidor ECUASERVER +593 mediante Steam"
+            >
+
+              🚛
+
+              <span>
+                Unirse al servidor · Steam
+              </span>
+
+            </a>
+
+          </section>
+
+
+          <section
+            class="panel quick-stats"
+            aria-label="Resumen del servidor"
+          >
+
+            <div class="stat">
+
+              <div class="stat-label">
+                Jugadores
+              </div>
+
+              <div
+                class="stat-value"
+                id="quick-players"
+              >
+                0
+              </div>
+
+            </div>
+
+
+            <div class="stat">
+
+              <div class="stat-label">
+                Capacidad
+              </div>
+
+              <div
+                class="stat-value"
+                id="quick-slots"
+              >
+                0 / 0
+              </div>
+
+            </div>
+
+
+            <div class="stat">
+
+              <div class="stat-label">
+                Versión
+              </div>
+
+              <div
+                class="stat-value"
+                id="quick-version"
+              >
+                —
+              </div>
+
+            </div>
+
+
+            <div class="stat">
+
+              <div class="stat-label">
+                Estado API
+              </div>
+
+              <div
+                class="stat-value"
+                id="quick-api"
+              >
+                Verificando
+              </div>
+
+            </div>
+
+          </section>
+
+        </div>
+
+
+        <!-- ===================================
+             CAPACIDAD + JUGADORES
+        ==================================== -->
+
+        <div class="section-grid">
+
+
+          <!-- CAPACIDAD -->
+
+          <section
+            class="panel section-card"
+            aria-labelledby="capacity-title"
+          >
+
+            <div class="section-heading">
+
+              <div>
+
+                <h2 id="capacity-title">
+                  🅿️ Capacidad del servidor
+                </h2>
+
+                <p>
+                  Ocupación actual de las plazas disponibles.
+                </p>
+
+              </div>
+
+              <span
+                class="count-badge"
+                id="capacity-percent"
+              >
+                —
+              </span>
+
+            </div>
+
+
+            <div class="slots-number">
+
+              <div
+                class="slots-count"
+                id="slots-count"
+              >
+                0 / 0
+              </div>
+
+              <div
+                class="slots-percent"
+                id="slots-percent-text"
+              >
+                Sin datos
+              </div>
+
+            </div>
+
+
+            <div
+              class="progress-bar-bg"
+              role="progressbar"
+              aria-label="Ocupación del servidor"
+              aria-valuemin="0"
+              aria-valuemax="100"
+              aria-valuenow="0"
+            >
+
+              <div
+                class="progress-bar-fill"
+                id="slots-bar"
+              ></div>
+
+            </div>
+
+
+            <div class="capacity-meta">
+
+              <div class="mini-metric">
+
+                <span>
+                  🚚 En ruta
+                </span>
+
+                <strong id="connected-count">
+                  0 jugadores
+                </strong>
+
+              </div>
+
+
+              <div class="mini-metric">
+
+                <span>
+                  🅿️ Disponibles
+                </span>
+
+                <strong id="available-slots">
+                  —
+                </strong>
+
+              </div>
+
+            </div>
+
+          </section>
+
+
+          <!-- JUGADORES -->
+
+          <section
+            class="panel section-card"
+            aria-labelledby="players-title"
+          >
+
+            <div class="section-heading">
+
+              <div>
+
+                <h2 id="players-title">
+                  🛣️ Camioneros en ruta
+                </h2>
+
+                <p>
+                  Jugadores detectados por la API ATS.
+                </p>
+
+              </div>
+
+              <span
+                class="count-badge"
+                id="players-badge"
+              >
+                0 jugadores
+              </span>
+
+            </div>
+
+
+            <div
+              class="players-container"
+              id="players-list"
+              aria-live="polite"
+            >
+
+              <div class="player-empty">
+                ⏳ Cargando lista de camioneros...
+              </div>
+
+            </div>
+
+          </section>
+
+        </div>
+
+
+        <!-- ===================================
+             SESSION ID
+        ==================================== -->
+
+        <section
+          class="panel session-panel"
+          aria-labelledby="session-title"
         >
 
+          <div class="section-heading">
+
+            <div>
+
+              <h2 id="session-title">
+                🔑 ID de sesión
+              </h2>
+
+              <p>
+                Úsalo para conectarte manualmente si Steam
+                no abre el servidor automáticamente.
+              </p>
+
+            </div>
+
+          </div>
+
+
+          <div class="session-layout">
+
+            <label
+              class="sr-only"
+              for="session-id"
+            >
+              ID de sesión
+            </label>
+
+            <input
+              type="text"
+              class="session-input"
+              id="session-id"
+              value="85568392936670275"
+              readonly
+              spellcheck="false"
+              aria-describedby="session-help"
+            >
+
+            <button
+              type="button"
+              class="btn-copy"
+              id="btn-copy"
+            >
+              📋 Copiar ID
+            </button>
+
+          </div>
+
+
+          <p
+            class="session-help"
+            id="session-help"
+          >
+            El ID se actualiza automáticamente cuando
+            la API proporciona una nueva sesión.
+          </p>
+
+        </section>
+
+
+        <!-- ===================================
+             COMUNIDAD
+        ==================================== -->
+
+        <div
+          class="community"
+          aria-label="Comunidad y servicios"
+        >
+
+          <a
+            href="https://discord.gg/cTk2V9feYF"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="community-button discord"
+          >
+
+            <span
+              class="community-icon"
+              aria-hidden="true"
+            >
+              💬
+            </span>
+
+            <span class="community-copy">
+
+              <strong>
+                Discord oficial
+              </strong>
+
+              <span>
+                Únete a la comunidad ECUASERVER
+              </span>
+
+            </span>
+
+          </a>
+
+
+          <a
+            href="https://wa.link/k18cir"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="community-button whatsapp"
+          >
+
+            <span
+              class="community-icon"
+              aria-hidden="true"
+            >
+              🗺️
+            </span>
+
+            <span class="community-copy">
+
+              <strong>
+                Comprar mapa
+              </strong>
+
+              <span>
+                Consulta y compra por WhatsApp
+              </span>
+
+            </span>
+
+          </a>
+
+        </div>
+
+
+        <!-- ===================================
+             CONEXIÓN
+        ==================================== -->
+
+        <section
+          class="panel connection-panel"
+          aria-labelledby="connection-title"
+        >
+
+          <div class="section-heading">
+
+            <div>
+
+              <h2 id="connection-title">
+                📡 Estado de conexión
+              </h2>
+
+              <p>
+                Información del servidor y de la última
+                actualización recibida.
+              </p>
+
+            </div>
+
+
+            <button
+              type="button"
+              class="refresh-button"
+              id="refresh-button"
+            >
+              ↻ Actualizar ahora
+            </button>
+
+          </div>
+
+
+          <div class="connection-grid">
+
+
+            <div class="connection-item">
+
+              <div class="label">
+                API ATS
+              </div>
+
+              <div
+                class="value warn"
+                id="api-status"
+              >
+                Verificando...
+              </div>
+
+            </div>
+
+
+            <div class="connection-item">
+
+              <div class="label">
+                Última actualización
+              </div>
+
+              <div
+                class="value"
+                id="last-update"
+              >
+                Esperando...
+              </div>
+
+            </div>
+
+
+            <div class="connection-item">
+
+              <div class="label">
+                Respuesta
+              </div>
+
+              <div
+                class="value"
+                id="api-latency"
+              >
+                —
+              </div>
+
+            </div>
+
+
+            <div class="connection-item">
+
+              <div class="label">
+                Tiempo activo
+              </div>
+
+              <div
+                class="value"
+                id="api-uptime"
+              >
+                —
+              </div>
+
+            </div>
+
+
+            <div class="connection-item">
+
+              <div class="label">
+                Versión del juego
+              </div>
+
+              <div
+                class="value"
+                id="game-version"
+              >
+                —
+              </div>
+
+            </div>
+
+
+            <div class="connection-item">
+
+              <div class="label">
+                Modo
+              </div>
+
+              <div
+                class="value"
+                id="server-mode"
+              >
+                Public
+              </div>
+
+            </div>
+
+          </div>
+
+        </section>
+
+      </div>
+
+
+      <!-- =====================================
+           FOOTER
+      ====================================== -->
+
+      <footer class="footer">
+
+        <div class="footer-left">
+
           <span
-            id="status-dot"
-            class="status-dot"
+            class="footer-dot"
+            aria-hidden="true"
           ></span>
 
-          <span id="status-text">
-            Verificando
+          <span id="footer-status">
+            Actualización automática cada 10 segundos
           </span>
 
         </div>
 
-      </div>
-
-      <div class="header-info">
-
-        <div class="last-update">
-
-          <span
-            id="update-indicator"
-            class="update-indicator"
-          ></span>
-
-          <span id="last-update">
-            Esperando datos...
-          </span>
-
-        </div>
-
-        <span id="beta-badge"></span>
-
-      </div>
-
-    </header>
-
-
-    <section class="content">
-
-      <!-- ==========================
-           STEAM
-      =========================== -->
-
-      <a
-        id="steam-join-btn"
-        class="steam-button disabled"
-        href="#"
-        aria-disabled="true"
-      >
-        🚛 Unirse al Servidor (Steam)
-      </a>
-
-
-      <!-- ==========================
-           SLOTS
-      =========================== -->
-
-      <section class="card">
-
-        <div class="slots-header">
-
-          <div class="card-title">
-            Jugadores Conectados
-          </div>
-
-          <div
-            id="slots-count"
-            class="slots-count"
-          >
-            0 / 0
-          </div>
-
-        </div>
-
-        <div
-          class="slots-bar-container"
-          aria-hidden="true"
-        >
-
-          <div
-            id="slots-bar"
-            class="slots-bar"
-          ></div>
-
-        </div>
-
-        <div class="slots-details">
-
-          <div>
-            Ocupación:
-            <strong id="slots-percentage">—</strong>
-          </div>
-
-          <div>
-            Plazas disponibles:
-            <strong id="slots-available">—</strong>
-          </div>
-
-        </div>
-
-      </section>
-
-
-      <!-- ==========================
-           JUGADORES
-      =========================== -->
-
-      <section class="card">
-
-        <div class="players-header">
-
-          <div class="section-label">
-            Camioneros en ruta
-          </div>
-
-          <div
-            id="players-count"
-            class="players-count"
-          >
-            0 jugadores
-          </div>
-
-        </div>
-
-        <div
-          id="players-list"
-          class="players-list"
-          aria-live="polite"
-        >
-
-          <div class="empty-state">
-            Cargando lista...
-          </div>
-
-        </div>
-
-      </section>
-
-
-      <!-- ==========================
-           SESSION ID
-      =========================== -->
-
-      <section class="card">
-
-        <div class="section-label">
-          ID de sesión
-        </div>
-
-        <div class="session-description">
-          Puedes copiarlo para conectarte manualmente.
-        </div>
-
-        <input
-          id="session-id"
-          class="session-input"
-          type="text"
-          value=""
-          placeholder="No disponible"
-          readonly
-          aria-label="ID de sesión del servidor"
-        >
-
-        <button
-          id="btn-copy"
-          class="copy-button"
-          type="button"
-          disabled
-        >
-          Copiar
-        </button>
-
-        <input
-          id="steam-command"
-          class="session-input"
-          type="text"
-          value=""
-          placeholder="Session ID no disponible"
-          readonly
-          aria-label="Comando de conexión de Steam"
-        >
-
-        <button
-          id="btn-copy-command"
-          class="command-button"
-          type="button"
-          disabled
-        >
-          Copiar comando
-        </button>
-
-        <div
-          id="copy-message"
-          class="message"
-          aria-live="polite"
-        ></div>
-
-      </section>
-
-
-      <!-- ==========================
-           VERSIÓN
-      =========================== -->
-
-      <section class="card">
-
-        <div class="section-label">
-          Versión
-        </div>
-
-        <div
-          id="game-version"
-          class="info-value"
-        >
-          -
-        </div>
-
-      </section>
-
-
-      <!-- ==========================
-           UPTIME
-      =========================== -->
-
-      <section class="card">
-
-        <div class="section-label">
-          Tiempo activo
-        </div>
-
-        <div
-          id="api-uptime"
-          class="info-value"
-        >
-          -
-        </div>
-
-      </section>
-
-
-      <!-- ==========================
-           CONEXIÓN
-      =========================== -->
-
-      <section class="card">
-
-        <div class="section-label">
-          Estado de conexión
-        </div>
-
-        <div class="connection-grid">
-
-          <div class="connection-item">
-
-            <div class="connection-item-title">
-              API ATS
-            </div>
-
-            <div
-              id="api-status"
-              class="connection-item-value"
-            >
-              Verificando...
-            </div>
-
-          </div>
-
-
-          <div class="connection-item">
-
-            <div class="connection-item-title">
-              Servidor ATS
-            </div>
-
-            <div
-              id="server-connection-status"
-              class="connection-item-value"
-            >
-              Verificando...
-            </div>
-
-          </div>
-
-
-          <div class="connection-item">
-
-            <div class="connection-item-title">
-              Latencia de consulta
-            </div>
-
-            <div
-              id="api-latency"
-              class="connection-item-value"
-            >
-              —
-            </div>
-
-          </div>
-
-        </div>
-
-
-        <button
-          id="refresh-button"
-          class="refresh-button"
-          type="button"
-        >
-          🔄 Actualizar ahora
-        </button>
-
-      </section>
-
-
-      <!-- ==========================
-           ENLACES
-      =========================== -->
-
-      <div class="external-buttons">
-
-        <a
-          class="external-button discord"
-          href="https://discord.gg/cTk2V9feYF"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Discord
-        </a>
-
-        <a
-          class="external-button whatsapp"
-          href="https://wa.link/k18cir"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          WhatsApp / Mapa
-        </a>
-
-      </div>
+        <span>
+          ECUASERVER +593 · 🚛 American Truck Simulator
+        </span>
+
+      </footer>
 
     </section>
-
-
-    <footer class="footer">
-
-      <div>
-        ECUASERVER +593
-      </div>
-
-      <div>
-        Actualización automática cada 10 segundos
-      </div>
-
-    </footer>
 
   </main>
 
 
-  <script>
-    /* =====================================================
-       CONFIGURACIÓN
-    ===================================================== */
+  <!-- TOAST -->
 
-    const API_URL = '/api/status';
+  <div
+    class="toast"
+    id="toast"
+    role="status"
+    aria-live="polite"
+  ></div>
+
+
+  <!-- =======================================
+       JAVASCRIPT
+  ======================================== -->
+
+  <script>
+
+    const API_URL = "/api/status";
+
+    const FALLBACK_SESSION_ID =
+      "85568392936670275";
 
     const REFRESH_INTERVAL = 10000;
 
-    const REQUEST_TIMEOUT = 9000;
+    const REQUEST_TIMEOUT = 8000;
 
-    const FRESH_DATA_SECONDS = 20;
-
-    const STALE_DATA_SECONDS = 60;
-
-
-    /* =====================================================
-       ESTADO
-    ===================================================== */
 
     let isFetching = false;
 
-    let refreshTimer = null;
-
-    let relativeTimer = null;
-
     let lastSuccessfulUpdate = null;
-
-    let lastServerData = null;
-
-    let lastServerRunning = false;
 
     let previousPlayers = [];
 
-    let hasReceivedData = false;
+    let lastServerData = null;
+
+    let nextTimer = null;
+
+    let toastTimer = null;
 
 
-    /* =====================================================
-       ELEMENTOS
-    ===================================================== */
-
-    const elements = {
-      serverName: document.getElementById('server-name'),
-
-      gameName: document.getElementById('game-name'),
-
-      statusBadge: document.getElementById('status-badge'),
-
-      statusText: document.getElementById('status-text'),
-
-      lastUpdate: document.getElementById('last-update'),
-
-      updateIndicator: document.getElementById('update-indicator'),
-
-      betaBadge: document.getElementById('beta-badge'),
-
-      steamJoin: document.getElementById('steam-join-btn'),
-
-      slotsCount: document.getElementById('slots-count'),
-
-      slotsBar: document.getElementById('slots-bar'),
-
-      slotsPercentage:
-        document.getElementById('slots-percentage'),
-
-      slotsAvailable:
-        document.getElementById('slots-available'),
-
-      playersList:
-        document.getElementById('players-list'),
-
-      playersCount:
-        document.getElementById('players-count'),
-
-      sessionId:
-        document.getElementById('session-id'),
-
-      steamCommand:
-        document.getElementById('steam-command'),
-
-      copyButton:
-        document.getElementById('btn-copy'),
-
-      copyCommandButton:
-        document.getElementById('btn-copy-command'),
-
-      copyMessage:
-        document.getElementById('copy-message'),
-
-      gameVersion:
-        document.getElementById('game-version'),
-
-      apiUptime:
-        document.getElementById('api-uptime'),
-
-      apiStatus:
-        document.getElementById('api-status'),
-
-      serverConnectionStatus:
-        document.getElementById(
-          'server-connection-status'
-        ),
-
-      apiLatency:
-        document.getElementById('api-latency'),
-
-      refreshButton:
-        document.getElementById('refresh-button')
-    };
+    const $ = (id) =>
+      document.getElementById(id);
 
 
-    /* =====================================================
+    /* =====================================
        UTILIDADES
-    ===================================================== */
+    ====================================== */
 
-    function setText(
-      element,
-      value,
-      fallback = '-'
-    ) {
-      if (!element) {
-        return;
+    function setText(id, value) {
+
+      const element = $(id);
+
+      if (element) {
+        element.textContent = value;
       }
 
-      const valid =
-        value !== undefined &&
-        value !== null &&
-        String(value).trim() !== '';
-
-      element.textContent =
-        valid
-          ? String(value)
-          : fallback;
     }
 
 
-    function normalizeBoolean(value) {
+    function showToast(message) {
 
-      if (typeof value === 'boolean') {
-        return value;
-      }
+      const toast = $("toast");
 
-      if (typeof value === 'number') {
-        return value !== 0;
-      }
+      toast.textContent = message;
 
-      if (typeof value === 'string') {
+      toast.classList.add("show");
 
-        const normalized =
-          value.trim().toLowerCase();
+      clearTimeout(toastTimer);
 
-        if (
-          normalized === 'true' ||
-          normalized === '1' ||
-          normalized === 'online' ||
-          normalized === 'running' ||
-          normalized === 'activo'
-        ) {
-          return true;
-        }
+      toastTimer = setTimeout(() => {
 
-        if (
-          normalized === 'false' ||
-          normalized === '0' ||
-          normalized === 'offline' ||
-          normalized === 'stopped' ||
-          normalized === 'inactivo'
-        ) {
-          return false;
-        }
-      }
+        toast.classList.remove("show");
 
-      return false;
+      }, 2200);
+
     }
 
 
-    function getSlotsValue(value) {
+    function formatUptime(seconds) {
 
-      if (typeof value === 'number') {
-        return value;
-      }
-
-      if (typeof value === 'string') {
-
-        const parsed =
-          Number(value);
-
-        if (Number.isFinite(parsed)) {
-          return parsed;
-        }
-      }
+      const value = Number(seconds);
 
       if (
-        value &&
-        typeof value === 'object'
+        !Number.isFinite(value) ||
+        value < 0
       ) {
-
-        const possible =
-          value.max ??
-          value.total ??
-          value.capacity ??
-          value.slots;
-
-        const parsed =
-          Number(possible);
-
-        if (Number.isFinite(parsed)) {
-          return parsed;
-        }
+        return "—";
       }
 
-      return 0;
-    }
+      const total =
+        Math.floor(value);
 
+      const days =
+        Math.floor(total / 86400);
 
-    function normalizePlayers(value) {
-
-      if (Array.isArray(value)) {
-
-        return value
-          .map((player) => {
-
-            if (
-              typeof player === 'string' ||
-              typeof player === 'number'
-            ) {
-              return String(player);
-            }
-
-            if (
-              player &&
-              typeof player === 'object'
-            ) {
-
-              return String(
-                player.name ??
-                player.username ??
-                player.playerName ??
-                player.player_name ??
-                player.nickname ??
-                player.steamName ??
-                'Jugador'
-              );
-            }
-
-            return null;
-          })
-          .filter(Boolean);
-      }
-
-
-      if (
-        value &&
-        typeof value === 'object'
-      ) {
-
-        if (
-          Array.isArray(value.players)
-        ) {
-          return normalizePlayers(
-            value.players
-          );
-        }
-
-        if (
-          Array.isArray(value.list)
-        ) {
-          return normalizePlayers(
-            value.list
-          );
-        }
-      }
-
-      return [];
-    }
-
-
-    function getConnectedPlayerCount(
-      data,
-      players
-    ) {
-
-      if (
-        Array.isArray(
-          data?.connectedPlayers
-        )
-      ) {
-        return players.length;
-      }
-
-      if (
-        typeof data?.connectedPlayers ===
-        'number'
-      ) {
-        return Math.max(
-          0,
-          data.connectedPlayers
+      const hours =
+        Math.floor(
+          (total % 86400) / 3600
         );
-      }
 
-      if (
-        typeof data?.playerCount ===
-        'number'
-      ) {
-        return Math.max(
-          0,
-          data.playerCount
+      const minutes =
+        Math.floor(
+          (total % 3600) / 60
         );
+
+
+      if (days > 0) {
+
+        return `${days}d ${hours}h ${minutes}m`;
+
       }
 
-      return players.length;
+
+      if (hours > 0) {
+
+        return `${hours}h ${minutes}m`;
+
+      }
+
+
+      return `${minutes}m`;
+
     }
 
 
     function formatRelativeTime(date) {
 
       if (!date) {
-        return 'Esperando datos...';
+        return "Esperando...";
       }
 
       const seconds =
         Math.max(
           0,
           Math.floor(
-            (Date.now() - date.getTime()) /
-            1000
+            (Date.now() - date.getTime()) / 1000
           )
         );
+
 
       if (seconds < 2) {
-        return 'Actualizado ahora';
+        return "Ahora mismo";
       }
+
 
       if (seconds < 60) {
-        return `Actualizado hace ${seconds}s`;
+
+        return `Hace ${seconds}s`;
+
       }
+
 
       const minutes =
-        Math.floor(
-          seconds / 60
-        );
+        Math.floor(seconds / 60);
 
-      if (minutes === 1) {
-        return 'Actualizado hace 1 min';
-      }
 
-      return `Actualizado hace ${minutes} min`;
+      return `Hace ${minutes} min`;
+
     }
 
 
-    function getDataAgeSeconds() {
+    /* =====================================
+       NORMALIZACIÓN DE DATOS
+    ====================================== */
 
-      if (!lastSuccessfulUpdate) {
-        return Infinity;
+    function normalizePlayers(value) {
+
+      if (Array.isArray(value)) {
+        return value;
       }
 
-      return Math.max(
-        0,
-        Math.floor(
-          (Date.now() -
-            lastSuccessfulUpdate.getTime()) /
-          1000
-        )
+      if (
+        value &&
+        Array.isArray(value.players)
+      ) {
+        return value.players;
+      }
+
+      return [];
+
+    }
+
+
+    function getPlayerName(player) {
+
+      if (typeof player === "string") {
+
+        return (
+          player.trim() ||
+          "Camionero"
+        );
+
+      }
+
+
+      if (
+        !player ||
+        typeof player !== "object"
+      ) {
+
+        return "Camionero";
+
+      }
+
+
+      return String(
+        player.name ||
+        player.username ||
+        player.playerName ||
+        player.nick ||
+        "Camionero"
+      ).trim() || "Camionero";
+
+    }
+
+
+    function normalizeSlots(value) {
+
+      if (
+        typeof value === "number" &&
+        Number.isFinite(value)
+      ) {
+
+        return Math.max(
+          0,
+          Math.floor(value)
+        );
+
+      }
+
+
+      if (
+        value &&
+        typeof value === "object"
+      ) {
+
+        const max = Number(
+          value.max ??
+          value.total ??
+          value.capacity
+        );
+
+
+        if (Number.isFinite(max)) {
+
+          return Math.max(
+            0,
+            Math.floor(max)
+          );
+
+        }
+
+      }
+
+
+      const parsed =
+        Number(value);
+
+
+      if (Number.isFinite(parsed)) {
+
+        return Math.max(
+          0,
+          Math.floor(parsed)
+        );
+
+      }
+
+
+      return 16;
+
+    }
+
+
+    function isRunning(value) {
+
+      return (
+        value === true ||
+        value === 1 ||
+        value === "true" ||
+        value === "online" ||
+        value === "Online"
       );
+
     }
 
 
-    function updateRelativeTime() {
+    /* =====================================
+       ESTADO
+    ====================================== */
 
-      if (!lastSuccessfulUpdate) {
-
-        setText(
-          elements.lastUpdate,
-          'Esperando datos...'
-        );
-
-        return;
-      }
-
-      const age =
-        getDataAgeSeconds();
-
-
-      if (age <= FRESH_DATA_SECONDS) {
-
-        elements.updateIndicator.className =
-          'update-indicator success';
-
-        setText(
-          elements.lastUpdate,
-          formatRelativeTime(
-            lastSuccessfulUpdate
-          )
-        );
-
-        return;
-      }
-
-
-      if (age <= STALE_DATA_SECONDS) {
-
-        elements.updateIndicator.className =
-          'update-indicator warning';
-
-        setText(
-          elements.lastUpdate,
-          `${formatRelativeTime(
-            lastSuccessfulUpdate
-          )} · Datos anteriores`
-        );
-
-        return;
-      }
-
-
-      elements.updateIndicator.className =
-        'update-indicator error';
-
-      setText(
-        elements.lastUpdate,
-        `${formatRelativeTime(
-          lastSuccessfulUpdate
-        )} · Datos no verificados`
-      );
-    }
-
-
-    function scheduleNextRefresh() {
-
-      clearTimeout(
-        refreshTimer
-      );
-
-      refreshTimer =
-        setTimeout(
-          () => {
-            fetchServerStatus();
-          },
-          REFRESH_INTERVAL
-        );
-    }
-
-
-    function clearMessage() {
-
-      elements.copyMessage.textContent =
-        '';
-
-      elements.copyMessage.className =
-        'message';
-    }
-
-
-    function showMessage(
-      message,
-      type = ''
-    ) {
-
-      elements.copyMessage.textContent =
-        message;
-
-      elements.copyMessage.className =
-        type
-          ? `message ${type}`
-          : 'message';
-    }
-
-
-    /* =====================================================
-       ESTADO VISUAL
-    ===================================================== */
-
-    function setStatus(
-      type,
+    function updateStatus(
+      kind,
       text
     ) {
 
-      elements.statusBadge.className =
-        'status-badge';
+      const badge =
+        $("status-badge");
 
-      if (type === 'online') {
-        elements.statusBadge.classList.add(
-          'online'
-        );
-      }
-
-      if (type === 'offline') {
-        elements.statusBadge.classList.add(
-          'offline'
-        );
-      }
-
-      if (type === 'warning') {
-        elements.statusBadge.classList.add(
-          'warning'
-        );
-      }
+      badge.className =
+        `status-badge ${kind}`.trim();
 
       setText(
-        elements.statusText,
-        text,
-        'Verificando'
-      );
-    }
-
-
-    function setConnectionStatus(
-      element,
-      text,
-      type = ''
-    ) {
-
-      element.className =
-        'connection-item-value';
-
-      if (type) {
-        element.classList.add(
-          type
-        );
-      }
-
-      setText(
-        element,
+        "status-text",
         text
       );
+
     }
 
 
-    /* =====================================================
-       ESTADO SEGÚN ANTIGÜEDAD DE LOS DATOS
-    ===================================================== */
-
-    function updateDataFreshnessState() {
-
-      if (!hasReceivedData) {
-        return;
-      }
-
-      const age =
-        getDataAgeSeconds();
-
-
-      if (
-        age <= FRESH_DATA_SECONDS
-      ) {
-
-        if (lastServerRunning) {
-
-          setStatus(
-            'online',
-            'Servidor Online'
-          );
-
-        } else {
-
-          setStatus(
-            'offline',
-            'Servidor Offline'
-          );
-        }
-
-        return;
-      }
-
-
-      if (
-        age <= STALE_DATA_SECONDS
-      ) {
-
-        setStatus(
-          'warning',
-          'Datos anteriores'
-        );
-
-        setConnectionStatus(
-          elements.serverConnectionStatus,
-          lastServerRunning
-            ? 'Último estado: Online'
-            : 'Último estado: Offline',
-          'warning'
-        );
-
-        return;
-      }
-
-
-      setStatus(
-        'offline',
-        'Datos no verificados'
-      );
-
-      setConnectionStatus(
-        elements.serverConnectionStatus,
-        lastServerRunning
-          ? 'Último estado: Online'
-          : 'Último estado: Offline',
-        'warning'
-      );
-    }
-
-
-    /* =====================================================
-       JUGADORES
-    ===================================================== */
-
-    function renderPlayers(
-      players,
-      count
+    function updateJoinButton(
+      enabled,
+      sessionId
     ) {
 
-      elements.playersList.replaceChildren();
+      const button =
+        $("steam-join-btn");
 
-      setText(
-        elements.playersCount,
-        `${count} jugador${
-          count === 1 ? '' : 'es'
-        }`
+
+      const id =
+        sessionId ||
+        FALLBACK_SESSION_ID;
+
+
+      button.href =
+        `steam://run/270880//+connect%20${encodeURIComponent(id)}`;
+
+
+      button.classList.toggle(
+        "disabled",
+        !enabled
       );
+
+
+      button.setAttribute(
+        "aria-disabled",
+        String(!enabled)
+      );
+
+    }
+
+
+    /* =====================================
+       JUGADORES
+    ====================================== */
+
+    function renderPlayers(players) {
+
+      const container =
+        $("players-list");
+
+
+      container.replaceChildren();
 
 
       if (!players.length) {
 
         const empty =
-          document.createElement(
-            'div'
-          );
+          document.createElement("div");
+
 
         empty.className =
-          'empty-state';
+          "player-empty";
+
 
         empty.textContent =
-          count > 0
-            ? 'La API no proporcionó los nombres de los jugadores.'
-            : 'No hay jugadores conectados.';
+          lastServerData &&
+          isRunning(
+            lastServerData.serverRunning
+          )
+            ? "🛣️ No hay camioneros conectados en este momento."
+            : "🔌 El servidor no está disponible para mostrar jugadores.";
 
-        elements.playersList.appendChild(
+
+        container.appendChild(
           empty
         );
 
         return;
+
       }
 
 
-      players.forEach(
-        (playerName, index) => {
+      players.forEach((player) => {
 
-          const row =
-            document.createElement(
-              'div'
-            );
-
-          row.className =
-            'player';
+        const name =
+          getPlayerName(player);
 
 
-          const number =
-            document.createElement(
-              'span'
-            );
+        const item =
+          document.createElement("div");
 
-          number.className =
-            'player-number';
-
-          number.textContent =
-            `${index + 1}.`;
+        item.className =
+          "player-item";
 
 
-          const name =
-            document.createElement(
-              'span'
-            );
+        const avatar =
+          document.createElement("div");
 
-          name.className =
-            'player-name';
+        avatar.className =
+          "player-avatar";
 
-          /*
-           * textContent evita que un nombre
-           * pueda inyectar HTML o JavaScript.
-           */
+        avatar.textContent =
+          name.charAt(0).toUpperCase();
 
-          name.textContent =
-            playerName;
+        avatar.setAttribute(
+          "aria-hidden",
+          "true"
+        );
 
 
-          row.appendChild(
-            number
-          );
+        const nameElement =
+          document.createElement("span");
 
-          row.appendChild(
-            name
-          );
+        nameElement.className =
+          "player-name";
+
+        nameElement.textContent =
+          name;
 
 
-          elements.playersList.appendChild(
-            row
-          );
-        }
-      );
+        const tag =
+          document.createElement("span");
+
+        tag.className =
+          "player-tag";
+
+        tag.textContent =
+          "En ruta";
+
+
+        item.append(
+          avatar,
+          nameElement,
+          tag
+        );
+
+
+        container.appendChild(
+          item
+        );
+
+      });
+
     }
 
 
-    /* =====================================================
-       DETECTAR ENTRADAS / SALIDAS
-    ===================================================== */
-
     function detectPlayerChanges(
-      players
+      players,
+      hadPreviousData
     ) {
 
-      if (!hasReceivedData) {
-
-        previousPlayers =
-          [...players];
-
-        return;
-      }
-
-
-      const previousSet =
-        new Set(
-          previousPlayers
+      const current =
+        players.map(
+          getPlayerName
         );
+
+
+      const previous =
+        new Set(previousPlayers);
+
 
       const currentSet =
-        new Set(
-          players
-        );
+        new Set(current);
 
 
       const joined =
-        players.filter(
-          player =>
-            !previousSet.has(
-              player
-            )
+        current.filter(
+          name =>
+            !previous.has(name)
         );
 
 
       const left =
         previousPlayers.filter(
-          player =>
-            !currentSet.has(
-              player
-            )
+          name =>
+            !currentSet.has(name)
         );
-
-
-      if (joined.length) {
-
-        showMessage(
-          `🟢 Se conectó: ${joined.join(', ')}`,
-          'success'
-        );
-
-        setTimeout(
-          clearMessage,
-          5000
-        );
-
-      } else if (left.length) {
-
-        showMessage(
-          `🔴 Se desconectó: ${left.join(', ')}`,
-          'warning'
-        );
-
-        setTimeout(
-          clearMessage,
-          5000
-        );
-      }
 
 
       previousPlayers =
-        [...players];
-    }
-
-
-    /* =====================================================
-       SLOTS
-    ===================================================== */
-
-    function renderSlots(
-      connected,
-      slots
-    ) {
-
-      const safeConnected =
-        Math.max(
-          0,
-          Number(connected) || 0
-        );
-
-      const safeSlots =
-        Math.max(
-          0,
-          Number(slots) || 0
-        );
-
-
-      setText(
-        elements.slotsCount,
-        `${safeConnected} / ${safeSlots}`
-      );
-
-
-      if (safeSlots <= 0) {
-
-        elements.slotsBar.style.width =
-          '0%';
-
-        elements.slotsBar.className =
-          'slots-bar';
-
-        setText(
-          elements.slotsPercentage,
-          '—'
-        );
-
-        setText(
-          elements.slotsAvailable,
-          '—'
-        );
-
-        return;
-      }
-
-
-      const percentage =
-        Math.min(
-          100,
-          Math.max(
-            0,
-            (safeConnected /
-              safeSlots) *
-            100
-          )
-        );
-
-
-      const available =
-        Math.max(
-          0,
-          safeSlots -
-            safeConnected
-        );
-
-
-      elements.slotsBar.style.width =
-        `${percentage}%`;
-
-      elements.slotsBar.className =
-        'slots-bar';
+        current;
 
 
       if (
-        percentage >= 100
+        !hadPreviousData ||
+        (
+          !joined.length &&
+          !left.length
+        )
       ) {
 
-        elements.slotsBar.classList.add(
-          'full'
-        );
-
-      } else if (
-        percentage >= 80
-      ) {
-
-        elements.slotsBar.classList.add(
-          'warning'
-        );
-      }
-
-
-      setText(
-        elements.slotsPercentage,
-        `${Math.round(
-          percentage
-        )}%`
-      );
-
-
-      setText(
-        elements.slotsAvailable,
-        String(available)
-      );
-    }
-
-
-    /* =====================================================
-       SESSION ID
-    ===================================================== */
-
-    function updateSession(
-      sessionID
-    ) {
-
-      const session =
-        sessionID
-          ? String(
-              sessionID
-            ).trim()
-          : '';
-
-
-      if (!session) {
-
-        elements.sessionId.value =
-          '';
-
-        elements.sessionId.placeholder =
-          'No disponible';
-
-
-        elements.steamCommand.value =
-          '';
-
-        elements.steamCommand.placeholder =
-          'Session ID no disponible';
-
-
-        elements.copyButton.disabled =
-          true;
-
-        elements.copyCommandButton.disabled =
-          true;
-
-
-        elements.steamJoin.classList.remove(
-          'enabled'
-        );
-
-        elements.steamJoin.classList.add(
-          'disabled'
-        );
-
-
-        elements.steamJoin.href =
-          '#';
-
-        elements.steamJoin.setAttribute(
-          'aria-disabled',
-          'true'
-        );
-
         return;
+
       }
 
 
-      elements.sessionId.value =
-        session;
+      if (joined.length === 1) {
 
+        showToast(
+          `🚛 ${joined[0]} se unió al servidor.`
+        );
 
-      const steamCommand =
-        `steam://run/270880//+connect%20${encodeURIComponent(
-          session
-        )}`;
+      } else if (joined.length > 1) {
 
+        showToast(
+          `🚛 ${joined.length} camioneros se unieron.`
+        );
 
-      elements.steamCommand.value =
-        steamCommand;
+      } else if (left.length === 1) {
 
+        showToast(
+          `👋 ${left[0]} salió del servidor.`
+        );
 
-      elements.copyButton.disabled =
-        false;
+      } else if (left.length > 1) {
 
-      elements.copyCommandButton.disabled =
-        false;
+        showToast(
+          `👋 ${left.length} camioneros salieron.`
+        );
 
+      }
 
-      elements.steamJoin.href =
-        steamCommand;
-
-
-      elements.steamJoin.classList.remove(
-        'disabled'
-      );
-
-      elements.steamJoin.classList.add(
-        'enabled'
-      );
-
-
-      elements.steamJoin.setAttribute(
-        'aria-disabled',
-        'false'
-      );
     }
 
 
-    /* =====================================================
-       PORTAPAPELES
-    ===================================================== */
-
-    async function copyText(
-      text
-    ) {
-
-      if (!text) {
-        return false;
-      }
-
-
-      try {
-
-        if (
-          navigator.clipboard &&
-          window.isSecureContext
-        ) {
-
-          await navigator.clipboard.writeText(
-            text
-          );
-
-          return true;
-        }
-
-      } catch (error) {
-        // Se intenta el fallback.
-      }
-
-
-      try {
-
-        const textarea =
-          document.createElement(
-            'textarea'
-          );
-
-
-        textarea.value =
-          text;
-
-
-        textarea.style.position =
-          'fixed';
-
-        textarea.style.left =
-          '-9999px';
-
-        textarea.style.top =
-          '0';
-
-
-        document.body.appendChild(
-          textarea
-        );
-
-
-        textarea.focus();
-
-        textarea.select();
-
-
-        const successful =
-          document.execCommand(
-            'copy'
-          );
-
-
-        textarea.remove();
-
-
-        return successful;
-
-      } catch (error) {
-
-        return false;
-      }
-    }
-
-
-    async function copySessionId() {
-
-      clearMessage();
-
-
-      const session =
-        elements.sessionId.value.trim();
-
-
-      if (!session) {
-
-        showMessage(
-          'No hay un ID de sesión disponible.',
-          'warning'
-        );
-
-        return;
-      }
-
-
-      const copied =
-        await copyText(
-          session
-        );
-
-
-      if (copied) {
-
-        showMessage(
-          'ID de sesión copiado correctamente.',
-          'success'
-        );
-
-      } else {
-
-        showMessage(
-          'No se pudo copiar automáticamente.',
-          'error'
-        );
-      }
-    }
-
-
-    async function copySteamCommand() {
-
-      clearMessage();
-
-
-      const command =
-        elements.steamCommand.value.trim();
-
-
-      if (!command) {
-
-        showMessage(
-          'No hay un comando disponible.',
-          'warning'
-        );
-
-        return;
-      }
-
-
-      const copied =
-        await copyText(
-          command
-        );
-
-
-      if (copied) {
-
-        showMessage(
-          'Comando de Steam copiado correctamente.',
-          'success'
-        );
-
-      } else {
-
-        showMessage(
-          'No se pudo copiar automáticamente.',
-          'error'
-        );
-      }
-    }
-
-
-    /* =====================================================
-       RENDER SERVER
-    ===================================================== */
-
-    function renderServerData(
+    /* =====================================
+       RENDER PRINCIPAL
+    ====================================== */
+
+    function renderData(
       data,
       latency
     ) {
 
-      const serverName =
-        data.serverName ??
-        'ECUASERVER +593';
+      const hadPreviousData =
+        Boolean(lastServerData);
 
 
-      const gameName =
-        data.game ??
-        'American Truck Simulator';
-
-
-      const serverRunning =
-        normalizeBoolean(
-          data.serverRunning
-        );
+      lastServerData =
+        data;
 
 
       const players =
@@ -2365,359 +2446,381 @@
         );
 
 
-      const connected =
-        getConnectedPlayerCount(
-          data,
-          players
-        );
+      const connectedCount =
+        players.length;
 
 
-      const slots =
-        getSlotsValue(
+      const totalSlots =
+        normalizeSlots(
           data.slots
         );
 
 
-      /* HEADER */
+      const percentage =
+        totalSlots > 0
+          ? Math.min(
+              100,
+              Math.round(
+                (
+                  connectedCount /
+                  totalSlots
+                ) * 100
+              )
+            )
+          : 0;
+
+
+      const available =
+        Math.max(
+          0,
+          totalSlots -
+          connectedCount
+        );
+
+
+      const running =
+        isRunning(
+          data.serverRunning
+        );
+
+
+      const mode =
+        data.beta
+          ? String(data.beta)
+          : "Public";
+
+
+      const sessionId =
+        String(
+          data.sessionID ||
+          FALLBACK_SESSION_ID
+        );
+
+
+      const version =
+        data.game_version ||
+        data.gameVersion ||
+        "—";
+
+
+      /* SERVIDOR */
 
       setText(
-        elements.serverName,
-        serverName,
-        'ECUASERVER +593'
+        "server-name",
+        data.serverName ||
+        "ECUASERVER +593"
       );
 
 
       setText(
-        elements.gameName,
-        gameName,
-        'American Truck Simulator'
+        "game-name",
+        `${data.game || "American Truck Simulator"} · ${mode}`
       );
-
-
-      /* SERVER */
-
-      lastServerRunning =
-        serverRunning;
-
-
-      if (serverRunning) {
-
-        setStatus(
-          'online',
-          'Servidor Online'
-        );
-
-        setConnectionStatus(
-          elements.serverConnectionStatus,
-          'Online',
-          'online'
-        );
-
-      } else {
-
-        setStatus(
-          'offline',
-          'Servidor Offline'
-        );
-
-        setConnectionStatus(
-          elements.serverConnectionStatus,
-          'Offline',
-          'offline'
-        );
-      }
-
-
-      /* BETA */
-
-      if (
-        normalizeBoolean(
-          data.beta
-        )
-      ) {
-
-        elements.betaBadge.textContent =
-          'Beta';
-
-      } else {
-
-        elements.betaBadge.textContent =
-          '';
-      }
 
 
       /* SLOTS */
 
-      renderSlots(
-        connected,
-        slots
+      setText(
+        "slots-count",
+        `${connectedCount} / ${totalSlots}`
       );
 
-
-      /* PLAYERS */
-
-      detectPlayerChanges(
-        players
-      );
-
-
-      renderPlayers(
-        players,
-        connected
-      );
-
-
-      /* SESSION */
-
-      updateSession(
-        data.sessionID ??
-        data.sessionId ??
-        ''
-      );
-
-
-      /* VERSION */
 
       setText(
-        elements.gameVersion,
-        data.game_version ??
-        data.gameVersion ??
-        '-'
+        "quick-players",
+        String(connectedCount)
+      );
+
+
+      setText(
+        "quick-slots",
+        `${connectedCount} / ${totalSlots}`
+      );
+
+
+      setText(
+        "connected-count",
+        `${connectedCount} ${
+          connectedCount === 1
+            ? "jugador"
+            : "jugadores"
+        }`
+      );
+
+
+      setText(
+        "available-slots",
+        `${available} ${
+          available === 1
+            ? "plaza"
+            : "plazas"
+        }`
+      );
+
+
+      setText(
+        "players-badge",
+        `${connectedCount} ${
+          connectedCount === 1
+            ? "jugador"
+            : "jugadores"
+        }`
+      );
+
+
+      setText(
+        "capacity-percent",
+        `${percentage}%`
+      );
+
+
+      setText(
+        "slots-percent-text",
+        totalSlots > 0
+          ? `${percentage}% ocupado`
+          : "Sin capacidad"
+      );
+
+
+      /* VERSIÓN */
+
+      setText(
+        "game-version",
+        version
+      );
+
+
+      setText(
+        "quick-version",
+        version
+      );
+
+
+      /* MODO */
+
+      setText(
+        "server-mode",
+        mode
       );
 
 
       /* UPTIME */
 
       setText(
-        elements.apiUptime,
-        data.apiUptime ??
-        data.api_uptime ??
-        '-'
+        "api-uptime",
+        formatUptime(
+          data.apiUptime
+        )
       );
 
 
-      /* LATENCY */
+      /* LATENCIA */
 
-      if (
-        Number.isFinite(
-          latency
-        )
-      ) {
-
-        setText(
-          elements.apiLatency,
-          `${latency} ms`
-        );
-
-      } else {
-
-        setText(
-          elements.apiLatency,
-          '—'
-        );
-      }
+      setText(
+        "api-latency",
+        `${latency} ms`
+      );
 
 
       /* API */
 
-      setConnectionStatus(
-        elements.apiStatus,
-        'Conectada',
-        'online'
+      setText(
+        "quick-api",
+        "Conectada"
+      );
+
+
+      setText(
+        "api-status",
+        "Conectada"
+      );
+
+
+      $("api-status").className =
+        "value good";
+
+
+      $("quick-api").style.color =
+        "var(--green)";
+
+
+      /* BARRA */
+
+      const bar =
+        $("slots-bar");
+
+
+      bar.style.width =
+        `${percentage}%`;
+
+
+      bar.className =
+        "progress-bar-fill";
+
+
+      if (percentage >= 100) {
+
+        bar.classList.add(
+          "full"
+        );
+
+      } else if (percentage >= 80) {
+
+        bar.classList.add(
+          "warning"
+        );
+
+      }
+
+
+      bar.parentElement.setAttribute(
+        "aria-valuenow",
+        String(percentage)
       );
 
 
       /* ESTADO */
 
-      lastServerData =
-        data;
+      updateStatus(
+        running
+          ? ""
+          : "offline",
+        running
+          ? "En Línea"
+          : "Offline"
+      );
 
-      hasReceivedData =
-        true;
+
+      /* STEAM */
+
+      updateJoinButton(
+        running,
+        sessionId
+      );
+
+
+      /* SESSION */
+
+      $("session-id").value =
+        sessionId;
+
+
+      /* JUGADORES */
+
+      renderPlayers(
+        players
+      );
+
+
+      detectPlayerChanges(
+        players,
+        hadPreviousData
+      );
+
+
+      /* ACTUALIZACIÓN */
 
       lastSuccessfulUpdate =
         new Date();
 
 
-      elements.updateIndicator.className =
-        'update-indicator success';
+      setText(
+        "last-update",
+        "Ahora mismo"
+      );
 
 
-      updateRelativeTime();
+      setText(
+        "footer-status",
+        "Actualizado correctamente · próximo chequeo en 10 segundos"
+      );
+
     }
 
 
-    /* =====================================================
-       ERROR API
-    ===================================================== */
+    /* =====================================
+       ERROR
+    ====================================== */
 
-    function renderApiError(
-      error
-    ) {
+    function handleError(error) {
 
       console.error(
-        'Error consultando /api/status:',
+        "ECUASERVER:",
         error
       );
 
 
-      elements.updateIndicator.className =
-        'update-indicator error';
-
-
-      setConnectionStatus(
-        elements.apiStatus,
-        'Sin conexión',
-        'offline'
+      updateStatus(
+        "offline",
+        "Sin conexión"
       );
 
 
       setText(
-        elements.apiLatency,
-        '—'
+        "api-status",
+        "Sin respuesta"
       );
 
 
-      /*
-       * Si existen datos anteriores,
-       * los conservamos.
-       */
+      $("api-status").className =
+        "value bad";
 
-      if (lastServerData) {
 
-        setStatus(
-          'warning',
-          'Datos anteriores'
-        );
+      setText(
+        "quick-api",
+        "Sin respuesta"
+      );
 
+
+      $("quick-api").style.color =
+        "var(--red)";
+
+
+      setText(
+        "api-latency",
+        "—"
+      );
+
+
+      setText(
+        "footer-status",
+        "No se pudo actualizar · conservando el último estado disponible"
+      );
+
+
+      updateJoinButton(
+        false,
+        $("session-id").value ||
+        FALLBACK_SESSION_ID
+      );
+
+
+      if (!lastServerData) {
+
+        renderPlayers([]);
 
         setText(
-          elements.lastUpdate,
-          lastSuccessfulUpdate
-            ? `${formatRelativeTime(
-                lastSuccessfulUpdate
-              )} · API sin respuesta`
-            : 'API sin respuesta'
+          "last-update",
+          "Sin datos"
         );
 
+      } else {
 
-        setConnectionStatus(
-          elements.serverConnectionStatus,
-          lastServerRunning
-            ? 'Último estado: Online'
-            : 'Último estado: Offline',
-          'warning'
+        setText(
+          "last-update",
+          `${formatRelativeTime(
+            lastSuccessfulUpdate
+          )} · datos anteriores`
         );
 
-
-        return;
       }
 
-
-      /*
-       * Primera consulta fallida.
-       */
-
-      setStatus(
-        'offline',
-        'Sin conexión'
-      );
-
-
-      setConnectionStatus(
-        elements.serverConnectionStatus,
-        'No disponible',
-        'offline'
-      );
-
-
-      setText(
-        elements.serverName,
-        'ECUASERVER +593'
-      );
-
-
-      setText(
-        elements.gameName,
-        'American Truck Simulator'
-      );
-
-
-      setText(
-        elements.slotsCount,
-        '0 / 0'
-      );
-
-
-      elements.slotsBar.style.width =
-        '0%';
-
-
-      setText(
-        elements.slotsPercentage,
-        '—'
-      );
-
-
-      setText(
-        elements.slotsAvailable,
-        '—'
-      );
-
-
-      elements.playersList.replaceChildren();
-
-
-      const errorMessage =
-        document.createElement(
-          'div'
-        );
-
-
-      errorMessage.className =
-        'empty-state';
-
-
-      errorMessage.textContent =
-        'No se pudo obtener la lista de jugadores. Reintentando...';
-
-
-      elements.playersList.appendChild(
-        errorMessage
-      );
-
-
-      updateSession('');
-
-
-      setText(
-        elements.gameVersion,
-        '-'
-      );
-
-
-      setText(
-        elements.apiUptime,
-        '-'
-      );
-
-
-      setText(
-        elements.lastUpdate,
-        'No se pudo conectar con la API'
-      );
-
-
-      showMessage(
-        'La API ATS no respondió. Se volverá a intentar automáticamente.',
-        'error'
-      );
     }
 
 
-    /* =====================================================
-       FETCH PRINCIPAL
-    ===================================================== */
+    /* =====================================
+       CONSULTA API
+    ====================================== */
 
     async function fetchServerStatus() {
 
@@ -2730,47 +2833,25 @@
         true;
 
 
-      elements.refreshButton.disabled =
-        true;
-
-
-      if (!hasReceivedData) {
-
-        setStatus(
-          'warning',
-          'Verificando'
-        );
-
-
-        setConnectionStatus(
-          elements.apiStatus,
-          'Verificando...',
-          'warning'
-        );
-
-
-        setConnectionStatus(
-          elements.serverConnectionStatus,
-          'Verificando...',
-          'warning'
-        );
-      }
+      updateStatus(
+        "checking",
+        "Verificando"
+      );
 
 
       const controller =
         new AbortController();
 
 
-      const timeoutId =
+      const timeout =
         setTimeout(
-          () => {
-            controller.abort();
-          },
+          () =>
+            controller.abort(),
           REQUEST_TIMEOUT
         );
 
 
-      const startTime =
+      const started =
         performance.now();
 
 
@@ -2778,14 +2859,15 @@
 
         const response =
           await fetch(
-            `${API_URL}?_=${Date.now()}`,
+            `${API_URL}?t=${Date.now()}`,
             {
-              method: 'GET',
+              method: "GET",
 
-              cache: 'no-store',
+              cache: "no-store",
 
               headers: {
-                Accept: 'application/json'
+                "Accept":
+                  "application/json"
               },
 
               signal:
@@ -2797,48 +2879,29 @@
         const latency =
           Math.round(
             performance.now() -
-            startTime
+            started
           );
 
 
-        clearTimeout(
-          timeoutId
-        );
+        const contentType =
+          response.headers.get(
+            "content-type"
+          ) || "";
 
 
-        /*
-         * fetch no considera 500/502/504
-         * como excepción automáticamente.
-         */
-
-        if (!response.ok) {
-
-          let errorMessage =
-            `HTTP ${response.status}`;
-
-
-          try {
-
-            const errorData =
-              await response.json();
-
-
-            if (
-              errorData?.error
-            ) {
-
-              errorMessage =
-                errorData.error;
-            }
-
-          } catch (ignored) {
-            // Sin JSON de error.
-          }
-
+        if (
+          !contentType.includes(
+            "application/json"
+          )
+        ) {
 
           throw new Error(
-            errorMessage
+            `La API devolvió un formato inesperado (${
+              contentType ||
+              "desconocido"
+            })`
           );
+
         }
 
 
@@ -2847,171 +2910,290 @@
 
 
         if (
-          !data ||
-          typeof data !== 'object'
+          !response.ok ||
+          data.error
         ) {
 
           throw new Error(
-            'La API devolvió datos inválidos.'
+            data.detail ||
+            data.error ||
+            `HTTP ${response.status}`
           );
+
         }
 
 
-        renderServerData(
+        renderData(
           data,
           latency
         );
 
-
-        if (
-          elements.copyMessage.classList.contains(
-            'error'
-          )
-        ) {
-
-          clearMessage();
-        }
-
-
       } catch (error) {
 
-        clearTimeout(
-          timeoutId
+        handleError(
+          error
         );
 
-
-        if (
-          error?.name ===
-          'AbortError'
-        ) {
-
-          renderApiError(
-            new Error(
-              'La consulta tardó demasiado.'
-            )
-          );
-
-        } else {
-
-          renderApiError(
-            error
-          );
-        }
-
       } finally {
+
+        clearTimeout(
+          timeout
+        );
+
 
         isFetching =
           false;
 
 
-        elements.refreshButton.disabled =
-          false;
+        scheduleNextFetch();
 
-
-        /*
-         * El siguiente intento siempre
-         * queda programado.
-         */
-
-        scheduleNextRefresh();
       }
+
     }
 
 
-    /* =====================================================
-       STEAM
-    ===================================================== */
+    /* =====================================
+       PROGRAMACIÓN DE ACTUALIZACIONES
+    ====================================== */
 
-    elements.steamJoin.addEventListener(
-      'click',
-      function(event) {
+    function scheduleNextFetch() {
 
-        if (
-          !elements.sessionId.value.trim()
-        ) {
-
-          event.preventDefault();
-
-          showMessage(
-            'El servidor no tiene un ID de sesión disponible.',
-            'warning'
-          );
-        }
-      }
-    );
-
-
-    /* =====================================================
-       BOTONES
-    ===================================================== */
-
-    elements.copyButton.addEventListener(
-      'click',
-      copySessionId
-    );
-
-
-    elements.copyCommandButton.addEventListener(
-      'click',
-      copySteamCommand
-    );
-
-
-    elements.refreshButton.addEventListener(
-      'click',
-      function() {
-
-        clearTimeout(
-          refreshTimer
-        );
-
-        fetchServerStatus();
-      }
-    );
-
-
-    /* =====================================================
-       ACTUALIZACIÓN DEL TIEMPO
-    ===================================================== */
-
-    relativeTimer =
-      setInterval(
-        () => {
-
-          updateRelativeTime();
-
-          updateDataFreshnessState();
-
-        },
-        1000
+      clearTimeout(
+        nextTimer
       );
 
 
-    /* =====================================================
-       PÁGINA VISIBLE
-    ===================================================== */
+      nextTimer =
+        setTimeout(
+          () => {
 
-    document.addEventListener(
-      'visibilitychange',
-      function() {
+            if (!document.hidden) {
+
+              fetchServerStatus();
+
+            } else {
+
+              scheduleNextFetch();
+
+            }
+
+          },
+          REFRESH_INTERVAL
+        );
+
+    }
+
+
+    /* =====================================
+       COPIAR SESSION ID
+    ====================================== */
+
+    async function copyText(text) {
+
+      if (
+        navigator.clipboard &&
+        window.isSecureContext
+      ) {
+
+        await navigator.clipboard.writeText(
+          text
+        );
+
+        return;
+
+      }
+
+
+      const temporary =
+        document.createElement(
+          "textarea"
+        );
+
+
+      temporary.value =
+        text;
+
+
+      temporary.style.position =
+        "fixed";
+
+
+      temporary.style.opacity =
+        "0";
+
+
+      document.body.appendChild(
+        temporary
+      );
+
+
+      temporary.focus();
+
+      temporary.select();
+
+
+      const success =
+        document.execCommand(
+          "copy"
+        );
+
+
+      temporary.remove();
+
+
+      if (!success) {
+
+        throw new Error(
+          "No se pudo copiar"
+        );
+
+      }
+
+    }
+
+
+    $("btn-copy").addEventListener(
+      "click",
+      async () => {
+
+        const value =
+          $("session-id")
+            .value
+            .trim();
+
 
         if (
-          !document.hidden
+          !value ||
+          value === "—"
         ) {
 
-          clearTimeout(
-            refreshTimer
+          showToast(
+            "⚠️ No hay un ID de sesión disponible."
           );
 
-          fetchServerStatus();
+          return;
+
         }
+
+
+        try {
+
+          await copyText(
+            value
+          );
+
+
+          const button =
+            $("btn-copy");
+
+
+          const original =
+            button.textContent;
+
+
+          button.textContent =
+            "✅ Copiado";
+
+
+          showToast(
+            "📋 ID de sesión copiado."
+          );
+
+
+          setTimeout(
+            () => {
+
+              button.textContent =
+                original;
+
+            },
+            1800
+          );
+
+
+        } catch (error) {
+
+          showToast(
+            "⚠️ No se pudo copiar automáticamente."
+          );
+
+        }
+
       }
     );
 
 
-    /* =====================================================
+    /* =====================================
+       ACTUALIZAR MANUALMENTE
+    ====================================== */
+
+    $("refresh-button").addEventListener(
+      "click",
+      () => {
+
+        if (!isFetching) {
+
+          fetchServerStatus();
+
+        }
+
+      }
+    );
+
+
+    /* =====================================
+       CUANDO LA PÁGINA VUELVE A SER VISIBLE
+    ====================================== */
+
+    document.addEventListener(
+      "visibilitychange",
+      () => {
+
+        if (
+          !document.hidden &&
+          !isFetching
+        ) {
+
+          fetchServerStatus();
+
+        }
+
+      }
+    );
+
+
+    /* =====================================
+       ACTUALIZAR TEXTO DE TIEMPO
+    ====================================== */
+
+    setInterval(
+      () => {
+
+        if (lastSuccessfulUpdate) {
+
+          setText(
+            "last-update",
+            formatRelativeTime(
+              lastSuccessfulUpdate
+            )
+          );
+
+        }
+
+      },
+      1000
+    );
+
+
+    /* =====================================
        INICIO
-    ===================================================== */
+    ====================================== */
+
+    updateJoinButton(
+      false,
+      FALLBACK_SESSION_ID
+    );
+
 
     fetchServerStatus();
 
