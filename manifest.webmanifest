@@ -1,0 +1,12 @@
+{
+  "name": "ECUASERVER +593",
+  "short_name": "ECUASERVER",
+  "description": "Estado en tiempo real del servidor ECUASERVER +593 para American Truck Simulator.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#0f172a",
+  "theme_color": "#0f172a",
+  "lang": "es",
+  "dir": "ltr"
+}
