@@ -1,0 +1,532 @@
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  viewBox="0 0 1400 520"
+  preserveAspectRatio="xMidYMid slice"
+>
+
+  <defs>
+
+    <linearGradient
+      id="sky"
+      x1="0"
+      y1="0"
+      x2="0"
+      y2="1"
+    >
+
+      <stop
+        offset="0"
+        stop-color="#07172b"
+      />
+
+      <stop
+        offset=".55"
+        stop-color="#143a58"
+      />
+
+      <stop
+        offset="1"
+        stop-color="#f29b5b"
+      />
+
+    </linearGradient>
+
+
+    <linearGradient
+      id="road"
+      x1="0"
+      y1="0"
+      x2="0"
+      y2="1"
+    >
+
+      <stop
+        offset="0"
+        stop-color="#1b2b3d"
+      />
+
+      <stop
+        offset="1"
+        stop-color="#050a11"
+      />
+
+    </linearGradient>
+
+
+    <linearGradient
+      id="truck"
+      x1="0"
+      y1="0"
+      x2="1"
+      y2="1"
+    >
+
+      <stop
+        offset="0"
+        stop-color="#39c6ff"
+      />
+
+      <stop
+        offset=".55"
+        stop-color="#1677c8"
+      />
+
+      <stop
+        offset="1"
+        stop-color="#0b3d6b"
+      />
+
+    </linearGradient>
+
+
+    <linearGradient
+      id="light"
+      x1="0"
+      y1="0"
+      x2="1"
+      y2="0"
+    >
+
+      <stop
+        offset="0"
+        stop-color="#fff3b0"
+        stop-opacity=".95"
+      />
+
+      <stop
+        offset="1"
+        stop-color="#ffc857"
+        stop-opacity="0"
+      />
+
+    </linearGradient>
+
+
+    <filter id="blur">
+
+      <feGaussianBlur
+        stdDeviation="14"
+      />
+
+    </filter>
+
+  </defs>
+
+
+  <!-- CIELO -->
+
+  <rect
+    width="1400"
+    height="520"
+    fill="url(#sky)"
+  />
+
+
+  <!-- SOL -->
+
+  <circle
+    cx="1080"
+    cy="300"
+    r="95"
+    fill="#ffc857"
+    opacity=".26"
+    filter="url(#blur)"
+  />
+
+  <circle
+    cx="1080"
+    cy="300"
+    r="44"
+    fill="#ffc857"
+    opacity=".85"
+  />
+
+
+  <!-- MONTAÑAS -->
+
+  <path
+    d="
+      M0 325
+      C180 270 270 300 420 320
+      C570 340 690 278 835 300
+      C1010 326 1130 280 1400 315
+      V520
+      H0
+      Z
+    "
+    fill="#0b1a26"
+  />
+
+
+  <path
+    d="
+      M0 375
+      C250 335 410 360 590 385
+      C770 410 1010 345 1400 375
+      V520
+      H0
+      Z
+    "
+    fill="#07111b"
+  />
+
+
+  <!-- CARRETERA -->
+
+  <path
+    d="
+      M0 520
+      L480 370
+      L915 370
+      L1400 520
+      Z
+    "
+    fill="url(#road)"
+  />
+
+
+  <!-- BORDES -->
+
+  <path
+    d="
+      M0 520
+      L520 382
+    "
+    stroke="#b7c7d8"
+    stroke-width="5"
+    opacity=".5"
+  />
+
+
+  <path
+    d="
+      M1400 520
+      L885 382
+    "
+    stroke="#b7c7d8"
+    stroke-width="5"
+    opacity=".35"
+  />
+
+
+  <!-- LÍNEA CENTRAL -->
+
+  <path
+    d="
+      M480 482
+      L600 446
+    "
+    stroke="#ffc857"
+    stroke-width="8"
+    stroke-linecap="round"
+  />
+
+
+  <path
+    d="
+      M770 430
+      L820 417
+    "
+    stroke="#ffc857"
+    stroke-width="6"
+    stroke-linecap="round"
+  />
+
+
+  <path
+    d="
+      M905 404
+      L935 397
+    "
+    stroke="#ffc857"
+    stroke-width="4"
+    stroke-linecap="round"
+  />
+
+
+  <!-- CAMIÓN -->
+
+  <g transform="translate(560 260)">
+
+    <!-- SOMBRA -->
+
+    <path
+      d="
+        M40 125
+        H405
+        C429 125 449 143 453 166
+        L463 224
+        H0
+        L10 171
+        C13 144 23 125 40 125
+        Z
+      "
+      fill="#091521"
+      opacity=".7"
+    />
+
+
+    <!-- CABINA -->
+
+    <rect
+      x="62"
+      y="35"
+      width="215"
+      height="135"
+      rx="22"
+      fill="url(#truck)"
+    />
+
+
+    <!-- PARABRISAS -->
+
+    <path
+      d="
+        M88 47
+        H243
+        C260 47 273 59 276 76
+        L283 125
+        H78
+        L86 69
+        C88 56 93 47 101 47
+        Z
+      "
+      fill="#bdeeff"
+      opacity=".42"
+    />
+
+
+    <!-- REMOLQUE -->
+
+    <path
+      d="
+        M278 88
+        H371
+        L429 152
+        V199
+        H278
+        Z
+      "
+      fill="url(#truck)"
+    />
+
+
+    <!-- VENTANA LATERAL -->
+
+    <path
+      d="
+        M285 102
+        H355
+        L393 144
+        H285
+        Z
+      "
+      fill="#9bdcf5"
+      opacity=".38"
+    />
+
+
+    <!-- DETALLE FRONTAL -->
+
+    <path
+      d="
+        M45 78
+        H60
+        V160
+        H40
+        Z
+      "
+      fill="#d7e2eb"
+      opacity=".45"
+    />
+
+
+    <!-- ESCAPE -->
+
+    <path
+      d="
+        M64 31
+        H74
+        V-21
+        H89
+        V31
+      "
+      fill="none"
+      stroke="#aebdca"
+      stroke-width="9"
+      stroke-linecap="round"
+    />
+
+
+    <path
+      d="
+        M245 31
+        H255
+        V-21
+        H270
+        V31
+      "
+      fill="none"
+      stroke="#aebdca"
+      stroke-width="9"
+      stroke-linecap="round"
+    />
+
+
+    <!-- LUCES -->
+
+    <rect
+      x="322"
+      y="171"
+      width="32"
+      height="8"
+      rx="4"
+      fill="#ffc857"
+    />
+
+
+    <rect
+      x="387"
+      y="171"
+      width="24"
+      height="8"
+      rx="4"
+      fill="#ffc857"
+    />
+
+
+    <!-- SEPARACIÓN -->
+
+    <path
+      d="
+        M278 88
+        H285
+        V184
+        H278
+        Z
+      "
+      fill="#07111b"
+      opacity=".5"
+    />
+
+
+    <!-- RUEDAS -->
+
+    <circle
+      cx="104"
+      cy="226"
+      r="32"
+      fill="#080d13"
+    />
+
+
+    <circle
+      cx="104"
+      cy="226"
+      r="16"
+      fill="#8fa2b5"
+    />
+
+
+    <circle
+      cx="360"
+      cy="226"
+      r="32"
+      fill="#080d13"
+    />
+
+
+    <circle
+      cx="360"
+      cy="226"
+      r="16"
+      fill="#8fa2b5"
+    />
+
+
+    <!-- FAROS -->
+
+    <path
+      d="
+        M5 177
+        H61
+      "
+      stroke="#ffc857"
+      stroke-width="12"
+      stroke-linecap="round"
+    />
+
+
+    <path
+      d="
+        M5 177
+        H165
+      "
+      stroke="url(#light)"
+      stroke-width="8"
+      stroke-linecap="round"
+      opacity=".8"
+    />
+
+
+    <rect
+      x="40"
+      y="183"
+      width="22"
+      height="14"
+      rx="5"
+      fill="#fff6c7"
+    />
+
+  </g>
+
+
+  <!-- ÁRBOLES / SILUETAS -->
+
+  <g
+    opacity=".35"
+    fill="#0b1722"
+  >
+
+    <path
+      d="
+        M104 304
+        H116
+        L134 244
+        H142
+        L160 304
+        H172
+        L147 220
+        H129
+        Z
+      "
+    />
+
+    <path
+      d="
+        M120 274
+        H144
+        L141 280
+        H123
+        Z
+      "
+    />
+
+
+    <path
+      d="
+        M1270 340
+        H1282
+        L1300 268
+        H1308
+        L1326 340
+        H1338
+        L1314 242
+        H1294
+        Z
+      "
+    />
+
+  </g>
+
+</svg>
