@@ -10,21 +10,28 @@
 
   <meta
     name="theme-color"
-    content="#111827"
+    content="#0f172a"
   >
 
   <meta
     name="description"
-    content="Estado en tiempo real del servidor ECUASERVER +593 para American Truck Simulator"
+    content="Estado en tiempo real del servidor ECUASERVER +593 para American Truck Simulator."
+  >
+
+  <link
+    rel="icon"
+    type="image/svg+xml"
+    href="/favicon.svg"
+  >
+
+  <link
+    rel="manifest"
+    href="/manifest.webmanifest"
   >
 
   <title>ECUASERVER +593 | Estado del Servidor</title>
 
   <style>
-    /* =====================================================
-       VARIABLES
-    ===================================================== */
-
     :root {
       --bg: #0f172a;
       --bg-secondary: #111827;
@@ -54,10 +61,6 @@
       --shadow: 0 10px 30px rgba(0, 0, 0, 0.20);
     }
 
-    /* =====================================================
-       BASE
-    ===================================================== */
-
     * {
       box-sizing: border-box;
     }
@@ -69,7 +72,6 @@
     body {
       margin: 0;
       padding: 24px 16px 40px;
-
       min-height: 100vh;
 
       background:
@@ -103,36 +105,32 @@
       -webkit-tap-highlight-color: transparent;
     }
 
-    /* =====================================================
-       CONTENEDOR
-    ===================================================== */
-
     .container {
       width: 100%;
       max-width: 550px;
       margin: 0 auto;
     }
 
-    /* =====================================================
+    /* ==============================
        HEADER
-    ===================================================== */
+    ============================== */
 
     .header {
       background: var(--card);
+
       border: 1px solid var(--border);
       border-radius: 16px 16px 0 0;
 
       padding: 24px;
 
       box-shadow: var(--shadow);
-
-      border-bottom-color: var(--border);
     }
 
     .header-top {
       display: flex;
       align-items: flex-start;
       justify-content: space-between;
+
       gap: 16px;
     }
 
@@ -161,9 +159,9 @@
       line-height: 1.4;
     }
 
-    /* =====================================================
-       STATUS BADGE
-    ===================================================== */
+    /* ==============================
+       STATUS
+    ============================== */
 
     .status-badge {
       flex-shrink: 0;
@@ -207,7 +205,6 @@
 
     .status-badge.online .status-dot {
       background: var(--online);
-
       animation: statusPulse 1.8s infinite;
     }
 
@@ -245,9 +242,9 @@
       }
     }
 
-    /* =====================================================
+    /* ==============================
        HEADER INFO
-    ===================================================== */
+    ============================== */
 
     .header-info {
       display: flex;
@@ -285,13 +282,17 @@
       background: var(--online);
     }
 
+    .update-indicator.warning {
+      background: var(--warning);
+    }
+
     .update-indicator.error {
       background: var(--offline);
     }
 
-    /* =====================================================
+    /* ==============================
        CONTENIDO
-    ===================================================== */
+    ============================== */
 
     .content {
       background: var(--card);
@@ -306,9 +307,9 @@
       box-shadow: var(--shadow);
     }
 
-    /* =====================================================
-       BOTÓN STEAM
-    ===================================================== */
+    /* ==============================
+       STEAM
+    ============================== */
 
     .steam-button {
       display: flex;
@@ -316,7 +317,6 @@
       justify-content: center;
 
       width: 100%;
-
       min-height: 72px;
 
       padding: 16px 20px;
@@ -363,9 +363,9 @@
       opacity: 0.85;
     }
 
-    /* =====================================================
-       TARJETAS
-    ===================================================== */
+    /* ==============================
+       CARDS
+    ============================== */
 
     .card {
       margin-top: 24px;
@@ -398,9 +398,9 @@
       letter-spacing: 0.04em;
     }
 
-    /* =====================================================
+    /* ==============================
        SLOTS
-    ===================================================== */
+    ============================== */
 
     .slots-header {
       display: flex;
@@ -461,9 +461,9 @@
       line-height: 1.45;
     }
 
-    /* =====================================================
+    /* ==============================
        JUGADORES
-    ===================================================== */
+    ============================== */
 
     .players-header {
       display: flex;
@@ -507,7 +507,6 @@
 
     .player-number {
       width: 28px;
-
       flex-shrink: 0;
 
       color: var(--text-muted);
@@ -528,9 +527,9 @@
       padding: 4px 0;
     }
 
-    /* =====================================================
+    /* ==============================
        SESSION
-    ===================================================== */
+    ============================== */
 
     .session-description {
       margin: 10px 0 12px;
@@ -543,7 +542,6 @@
 
     .session-input {
       width: 100%;
-
       height: 60px;
 
       padding: 0 14px;
@@ -556,6 +554,7 @@
       color: var(--text);
 
       font-size: 17px;
+
       font-family:
         ui-monospace,
         SFMono-Regular,
@@ -569,7 +568,9 @@
 
     .session-input:focus {
       border-color: var(--accent);
-      box-shadow: 0 0 0 3px rgba(78, 168, 223, 0.12);
+
+      box-shadow:
+        0 0 0 3px rgba(78, 168, 223, 0.12);
     }
 
     .copy-button,
@@ -634,9 +635,9 @@
       opacity: 0.55;
     }
 
-    /* =====================================================
+    /* ==============================
        INFORMACIÓN
-    ===================================================== */
+    ============================== */
 
     .info-value {
       margin-top: 12px;
@@ -649,9 +650,9 @@
       overflow-wrap: anywhere;
     }
 
-    /* =====================================================
+    /* ==============================
        CONEXIÓN
-    ===================================================== */
+    ============================== */
 
     .connection-grid {
       display: grid;
@@ -674,6 +675,7 @@
       color: var(--text-secondary);
 
       font-size: 14px;
+
       text-transform: uppercase;
 
       letter-spacing: 0.04em;
@@ -700,9 +702,9 @@
       color: var(--warning);
     }
 
-    /* =====================================================
-       BOTONES EXTERNOS
-    ===================================================== */
+    /* ==============================
+       ENLACES
+    ============================== */
 
     .external-buttons {
       display: grid;
@@ -738,9 +740,9 @@
       color: #06140a;
     }
 
-    /* =====================================================
-       MENSAJE / TOAST
-    ===================================================== */
+    /* ==============================
+       MENSAJES
+    ============================== */
 
     .message {
       min-height: 22px;
@@ -766,9 +768,9 @@
       color: var(--warning);
     }
 
-    /* =====================================================
+    /* ==============================
        FOOTER
-    ===================================================== */
+    ============================== */
 
     .footer {
       margin-top: 18px;
@@ -782,17 +784,9 @@
       line-height: 1.6;
     }
 
-    /* =====================================================
-       ESTADO DE CARGA
-    ===================================================== */
-
-    .loading {
-      color: var(--text-secondary);
-    }
-
-    /* =====================================================
+    /* ==============================
        ACCESIBILIDAD
-    ===================================================== */
+    ============================== */
 
     :focus-visible {
       outline: 2px solid var(--accent);
@@ -804,10 +798,6 @@
 <body>
 
   <main class="container">
-
-    <!-- ===================================================
-         HEADER
-    ==================================================== -->
 
     <header class="header">
 
@@ -867,13 +857,11 @@
     </header>
 
 
-    <!-- ===================================================
-         CONTENIDO
-    ==================================================== -->
-
     <section class="content">
 
-      <!-- STEAM -->
+      <!-- ==========================
+           STEAM
+      =========================== -->
 
       <a
         id="steam-join-btn"
@@ -885,7 +873,9 @@
       </a>
 
 
-      <!-- SLOTS -->
+      <!-- ==========================
+           SLOTS
+      =========================== -->
 
       <section class="card">
 
@@ -933,7 +923,9 @@
       </section>
 
 
-      <!-- JUGADORES -->
+      <!-- ==========================
+           JUGADORES
+      =========================== -->
 
       <section class="card">
 
@@ -967,7 +959,9 @@
       </section>
 
 
-      <!-- SESSION ID -->
+      <!-- ==========================
+           SESSION ID
+      =========================== -->
 
       <section class="card">
 
@@ -1026,7 +1020,9 @@
       </section>
 
 
-      <!-- VERSIÓN -->
+      <!-- ==========================
+           VERSIÓN
+      =========================== -->
 
       <section class="card">
 
@@ -1044,7 +1040,9 @@
       </section>
 
 
-      <!-- API UPTIME -->
+      <!-- ==========================
+           UPTIME
+      =========================== -->
 
       <section class="card">
 
@@ -1062,7 +1060,9 @@
       </section>
 
 
-      <!-- ESTADO DE CONEXIÓN -->
+      <!-- ==========================
+           CONEXIÓN
+      =========================== -->
 
       <section class="card">
 
@@ -1087,6 +1087,7 @@
 
           </div>
 
+
           <div class="connection-item">
 
             <div class="connection-item-title">
@@ -1101,6 +1102,7 @@
             </div>
 
           </div>
+
 
           <div class="connection-item">
 
@@ -1119,6 +1121,7 @@
 
         </div>
 
+
         <button
           id="refresh-button"
           class="refresh-button"
@@ -1130,7 +1133,9 @@
       </section>
 
 
-      <!-- ENLACES -->
+      <!-- ==========================
+           ENLACES
+      =========================== -->
 
       <div class="external-buttons">
 
@@ -1157,8 +1162,6 @@
     </section>
 
 
-    <!-- FOOTER -->
-
     <footer class="footer">
 
       <div>
@@ -1181,11 +1184,13 @@
 
     const API_URL = '/api/status';
 
-    const DEFAULT_SESSION_ID = '85568392936670275';
-
     const REFRESH_INTERVAL = 10000;
 
     const REQUEST_TIMEOUT = 9000;
+
+    const FRESH_DATA_SECONDS = 20;
+
+    const STALE_DATA_SECONDS = 60;
 
 
     /* =====================================================
@@ -1202,6 +1207,8 @@
 
     let lastServerData = null;
 
+    let lastServerRunning = false;
+
     let previousPlayers = [];
 
     let hasReceivedData = false;
@@ -1213,12 +1220,15 @@
 
     const elements = {
       serverName: document.getElementById('server-name'),
+
       gameName: document.getElementById('game-name'),
 
       statusBadge: document.getElementById('status-badge'),
+
       statusText: document.getElementById('status-text'),
 
       lastUpdate: document.getElementById('last-update'),
+
       updateIndicator: document.getElementById('update-indicator'),
 
       betaBadge: document.getElementById('beta-badge'),
@@ -1226,31 +1236,55 @@
       steamJoin: document.getElementById('steam-join-btn'),
 
       slotsCount: document.getElementById('slots-count'),
+
       slotsBar: document.getElementById('slots-bar'),
-      slotsPercentage: document.getElementById('slots-percentage'),
-      slotsAvailable: document.getElementById('slots-available'),
 
-      playersList: document.getElementById('players-list'),
-      playersCount: document.getElementById('players-count'),
+      slotsPercentage:
+        document.getElementById('slots-percentage'),
 
-      sessionId: document.getElementById('session-id'),
-      steamCommand: document.getElementById('steam-command'),
+      slotsAvailable:
+        document.getElementById('slots-available'),
 
-      copyButton: document.getElementById('btn-copy'),
-      copyCommandButton: document.getElementById('btn-copy-command'),
+      playersList:
+        document.getElementById('players-list'),
 
-      copyMessage: document.getElementById('copy-message'),
+      playersCount:
+        document.getElementById('players-count'),
 
-      gameVersion: document.getElementById('game-version'),
-      apiUptime: document.getElementById('api-uptime'),
+      sessionId:
+        document.getElementById('session-id'),
 
-      apiStatus: document.getElementById('api-status'),
+      steamCommand:
+        document.getElementById('steam-command'),
+
+      copyButton:
+        document.getElementById('btn-copy'),
+
+      copyCommandButton:
+        document.getElementById('btn-copy-command'),
+
+      copyMessage:
+        document.getElementById('copy-message'),
+
+      gameVersion:
+        document.getElementById('game-version'),
+
+      apiUptime:
+        document.getElementById('api-uptime'),
+
+      apiStatus:
+        document.getElementById('api-status'),
+
       serverConnectionStatus:
-        document.getElementById('server-connection-status'),
+        document.getElementById(
+          'server-connection-status'
+        ),
 
-      apiLatency: document.getElementById('api-latency'),
+      apiLatency:
+        document.getElementById('api-latency'),
 
-      refreshButton: document.getElementById('refresh-button')
+      refreshButton:
+        document.getElementById('refresh-button')
     };
 
 
@@ -1258,21 +1292,29 @@
        UTILIDADES
     ===================================================== */
 
-    function setText(element, value, fallback = '-') {
-      if (!element) return;
+    function setText(
+      element,
+      value,
+      fallback = '-'
+    ) {
+      if (!element) {
+        return;
+      }
 
-      const finalValue =
+      const valid =
         value !== undefined &&
         value !== null &&
-        String(value).trim() !== ''
+        String(value).trim() !== '';
+
+      element.textContent =
+        valid
           ? String(value)
           : fallback;
-
-      element.textContent = finalValue;
     }
 
 
     function normalizeBoolean(value) {
+
       if (typeof value === 'boolean') {
         return value;
       }
@@ -1282,9 +1324,9 @@
       }
 
       if (typeof value === 'string') {
-        const normalized = value
-          .trim()
-          .toLowerCase();
+
+        const normalized =
+          value.trim().toLowerCase();
 
         if (
           normalized === 'true' ||
@@ -1312,26 +1354,34 @@
 
 
     function getSlotsValue(value) {
+
       if (typeof value === 'number') {
         return value;
       }
 
       if (typeof value === 'string') {
-        const parsed = Number(value);
+
+        const parsed =
+          Number(value);
 
         if (Number.isFinite(parsed)) {
           return parsed;
         }
       }
 
-      if (value && typeof value === 'object') {
+      if (
+        value &&
+        typeof value === 'object'
+      ) {
+
         const possible =
           value.max ??
           value.total ??
           value.capacity ??
           value.slots;
 
-        const parsed = Number(possible);
+        const parsed =
+          Number(possible);
 
         if (Number.isFinite(parsed)) {
           return parsed;
@@ -1343,7 +1393,9 @@
 
 
     function normalizePlayers(value) {
+
       if (Array.isArray(value)) {
+
         return value
           .map((player) => {
 
@@ -1354,7 +1406,11 @@
               return String(player);
             }
 
-            if (player && typeof player === 'object') {
+            if (
+              player &&
+              typeof player === 'object'
+            ) {
+
               return String(
                 player.name ??
                 player.username ??
@@ -1371,16 +1427,26 @@
           .filter(Boolean);
       }
 
+
       if (
         value &&
         typeof value === 'object'
       ) {
-        if (Array.isArray(value.players)) {
-          return normalizePlayers(value.players);
+
+        if (
+          Array.isArray(value.players)
+        ) {
+          return normalizePlayers(
+            value.players
+          );
         }
 
-        if (Array.isArray(value.list)) {
-          return normalizePlayers(value.list);
+        if (
+          Array.isArray(value.list)
+        ) {
+          return normalizePlayers(
+            value.list
+          );
         }
       }
 
@@ -1388,21 +1454,37 @@
     }
 
 
-    function getConnectedPlayerCount(data, players) {
-      if (Array.isArray(data?.connectedPlayers)) {
+    function getConnectedPlayerCount(
+      data,
+      players
+    ) {
+
+      if (
+        Array.isArray(
+          data?.connectedPlayers
+        )
+      ) {
         return players.length;
       }
 
       if (
-        typeof data?.connectedPlayers === 'number'
+        typeof data?.connectedPlayers ===
+        'number'
       ) {
-        return Math.max(0, data.connectedPlayers);
+        return Math.max(
+          0,
+          data.connectedPlayers
+        );
       }
 
       if (
-        typeof data?.playerCount === 'number'
+        typeof data?.playerCount ===
+        'number'
       ) {
-        return Math.max(0, data.playerCount);
+        return Math.max(
+          0,
+          data.playerCount
+        );
       }
 
       return players.length;
@@ -1410,14 +1492,19 @@
 
 
     function formatRelativeTime(date) {
+
       if (!date) {
         return 'Esperando datos...';
       }
 
-      const seconds = Math.max(
-        0,
-        Math.floor((Date.now() - date.getTime()) / 1000)
-      );
+      const seconds =
+        Math.max(
+          0,
+          Math.floor(
+            (Date.now() - date.getTime()) /
+            1000
+          )
+        );
 
       if (seconds < 2) {
         return 'Actualizado ahora';
@@ -1427,7 +1514,10 @@
         return `Actualizado hace ${seconds}s`;
       }
 
-      const minutes = Math.floor(seconds / 60);
+      const minutes =
+        Math.floor(
+          seconds / 60
+        );
 
       if (minutes === 1) {
         return 'Actualizado hace 1 min';
@@ -1437,8 +1527,27 @@
     }
 
 
-    function updateRelativeTime() {
+    function getDataAgeSeconds() {
+
       if (!lastSuccessfulUpdate) {
+        return Infinity;
+      }
+
+      return Math.max(
+        0,
+        Math.floor(
+          (Date.now() -
+            lastSuccessfulUpdate.getTime()) /
+          1000
+        )
+      );
+    }
+
+
+    function updateRelativeTime() {
+
+      if (!lastSuccessfulUpdate) {
+
         setText(
           elements.lastUpdate,
           'Esperando datos...'
@@ -1447,30 +1556,87 @@
         return;
       }
 
+      const age =
+        getDataAgeSeconds();
+
+
+      if (age <= FRESH_DATA_SECONDS) {
+
+        elements.updateIndicator.className =
+          'update-indicator success';
+
+        setText(
+          elements.lastUpdate,
+          formatRelativeTime(
+            lastSuccessfulUpdate
+          )
+        );
+
+        return;
+      }
+
+
+      if (age <= STALE_DATA_SECONDS) {
+
+        elements.updateIndicator.className =
+          'update-indicator warning';
+
+        setText(
+          elements.lastUpdate,
+          `${formatRelativeTime(
+            lastSuccessfulUpdate
+          )} · Datos anteriores`
+        );
+
+        return;
+      }
+
+
+      elements.updateIndicator.className =
+        'update-indicator error';
+
       setText(
         elements.lastUpdate,
-        formatRelativeTime(lastSuccessfulUpdate)
+        `${formatRelativeTime(
+          lastSuccessfulUpdate
+        )} · Datos no verificados`
       );
     }
 
 
     function scheduleNextRefresh() {
-      clearTimeout(refreshTimer);
 
-      refreshTimer = setTimeout(() => {
-        fetchServerStatus();
-      }, REFRESH_INTERVAL);
+      clearTimeout(
+        refreshTimer
+      );
+
+      refreshTimer =
+        setTimeout(
+          () => {
+            fetchServerStatus();
+          },
+          REFRESH_INTERVAL
+        );
     }
 
 
     function clearMessage() {
-      elements.copyMessage.textContent = '';
-      elements.copyMessage.className = 'message';
+
+      elements.copyMessage.textContent =
+        '';
+
+      elements.copyMessage.className =
+        'message';
     }
 
 
-    function showMessage(message, type = '') {
-      elements.copyMessage.textContent = message;
+    function showMessage(
+      message,
+      type = ''
+    ) {
+
+      elements.copyMessage.textContent =
+        message;
 
       elements.copyMessage.className =
         type
@@ -1487,19 +1653,26 @@
       type,
       text
     ) {
+
       elements.statusBadge.className =
         'status-badge';
 
       if (type === 'online') {
-        elements.statusBadge.classList.add('online');
+        elements.statusBadge.classList.add(
+          'online'
+        );
       }
 
       if (type === 'offline') {
-        elements.statusBadge.classList.add('offline');
+        elements.statusBadge.classList.add(
+          'offline'
+        );
       }
 
       if (type === 'warning') {
-        elements.statusBadge.classList.add('warning');
+        elements.statusBadge.classList.add(
+          'warning'
+        );
       }
 
       setText(
@@ -1515,145 +1688,305 @@
       text,
       type = ''
     ) {
+
       element.className =
         'connection-item-value';
 
       if (type) {
-        element.classList.add(type);
+        element.classList.add(
+          type
+        );
       }
 
-      setText(element, text);
+      setText(
+        element,
+        text
+      );
     }
 
 
     /* =====================================================
-       RENDERIZAR JUGADORES
+       ESTADO SEGÚN ANTIGÜEDAD DE LOS DATOS
     ===================================================== */
 
-    function renderPlayers(players, count) {
+    function updateDataFreshnessState() {
+
+      if (!hasReceivedData) {
+        return;
+      }
+
+      const age =
+        getDataAgeSeconds();
+
+
+      if (
+        age <= FRESH_DATA_SECONDS
+      ) {
+
+        if (lastServerRunning) {
+
+          setStatus(
+            'online',
+            'Servidor Online'
+          );
+
+        } else {
+
+          setStatus(
+            'offline',
+            'Servidor Offline'
+          );
+        }
+
+        return;
+      }
+
+
+      if (
+        age <= STALE_DATA_SECONDS
+      ) {
+
+        setStatus(
+          'warning',
+          'Datos anteriores'
+        );
+
+        setConnectionStatus(
+          elements.serverConnectionStatus,
+          lastServerRunning
+            ? 'Último estado: Online'
+            : 'Último estado: Offline',
+          'warning'
+        );
+
+        return;
+      }
+
+
+      setStatus(
+        'offline',
+        'Datos no verificados'
+      );
+
+      setConnectionStatus(
+        elements.serverConnectionStatus,
+        lastServerRunning
+          ? 'Último estado: Online'
+          : 'Último estado: Offline',
+        'warning'
+      );
+    }
+
+
+    /* =====================================================
+       JUGADORES
+    ===================================================== */
+
+    function renderPlayers(
+      players,
+      count
+    ) {
+
       elements.playersList.replaceChildren();
 
       setText(
         elements.playersCount,
-        `${count} jugador${count === 1 ? '' : 'es'}`
+        `${count} jugador${
+          count === 1 ? '' : 'es'
+        }`
       );
 
-      if (!players.length) {
-        const empty = document.createElement('div');
 
-        empty.className = 'empty-state';
+      if (!players.length) {
+
+        const empty =
+          document.createElement(
+            'div'
+          );
+
+        empty.className =
+          'empty-state';
 
         empty.textContent =
           count > 0
             ? 'La API no proporcionó los nombres de los jugadores.'
             : 'No hay jugadores conectados.';
 
-        elements.playersList.appendChild(empty);
+        elements.playersList.appendChild(
+          empty
+        );
 
         return;
       }
 
-      players.forEach((playerName, index) => {
-        const row = document.createElement('div');
 
-        row.className = 'player';
+      players.forEach(
+        (playerName, index) => {
 
-        const number = document.createElement('span');
+          const row =
+            document.createElement(
+              'div'
+            );
 
-        number.className = 'player-number';
+          row.className =
+            'player';
 
-        number.textContent =
-          `${index + 1}.`;
 
-        const name = document.createElement('span');
+          const number =
+            document.createElement(
+              'span'
+            );
 
-        name.className = 'player-name';
+          number.className =
+            'player-number';
 
-        // IMPORTANTE:
-        // textContent evita inyección HTML si un jugador
-        // tiene caracteres o contenido malicioso en su nombre.
+          number.textContent =
+            `${index + 1}.`;
 
-        name.textContent = playerName;
 
-        row.appendChild(number);
-        row.appendChild(name);
+          const name =
+            document.createElement(
+              'span'
+            );
 
-        elements.playersList.appendChild(row);
-      });
+          name.className =
+            'player-name';
+
+          /*
+           * textContent evita que un nombre
+           * pueda inyectar HTML o JavaScript.
+           */
+
+          name.textContent =
+            playerName;
+
+
+          row.appendChild(
+            number
+          );
+
+          row.appendChild(
+            name
+          );
+
+
+          elements.playersList.appendChild(
+            row
+          );
+        }
+      );
     }
 
 
     /* =====================================================
-       DETECTAR CAMBIOS DE JUGADORES
+       DETECTAR ENTRADAS / SALIDAS
     ===================================================== */
 
-    function detectPlayerChanges(players) {
+    function detectPlayerChanges(
+      players
+    ) {
+
       if (!hasReceivedData) {
-        previousPlayers = [...players];
+
+        previousPlayers =
+          [...players];
+
         return;
       }
 
+
       const previousSet =
-        new Set(previousPlayers);
+        new Set(
+          previousPlayers
+        );
 
       const currentSet =
-        new Set(players);
+        new Set(
+          players
+        );
+
 
       const joined =
         players.filter(
-          player => !previousSet.has(player)
+          player =>
+            !previousSet.has(
+              player
+            )
         );
+
 
       const left =
         previousPlayers.filter(
-          player => !currentSet.has(player)
+          player =>
+            !currentSet.has(
+              player
+            )
         );
 
+
       if (joined.length) {
+
         showMessage(
           `🟢 Se conectó: ${joined.join(', ')}`,
           'success'
         );
 
-        setTimeout(() => {
-          clearMessage();
-        }, 5000);
+        setTimeout(
+          clearMessage,
+          5000
+        );
+
       } else if (left.length) {
+
         showMessage(
           `🔴 Se desconectó: ${left.join(', ')}`,
           'warning'
         );
 
-        setTimeout(() => {
-          clearMessage();
-        }, 5000);
+        setTimeout(
+          clearMessage,
+          5000
+        );
       }
 
-      previousPlayers = [...players];
+
+      previousPlayers =
+        [...players];
     }
 
 
     /* =====================================================
-       RENDERIZAR SLOTS
+       SLOTS
     ===================================================== */
 
     function renderSlots(
       connected,
       slots
     ) {
+
       const safeConnected =
-        Math.max(0, Number(connected) || 0);
+        Math.max(
+          0,
+          Number(connected) || 0
+        );
 
       const safeSlots =
-        Math.max(0, Number(slots) || 0);
+        Math.max(
+          0,
+          Number(slots) || 0
+        );
+
 
       setText(
         elements.slotsCount,
         `${safeConnected} / ${safeSlots}`
       );
 
+
       if (safeSlots <= 0) {
-        elements.slotsBar.style.width = '0%';
+
+        elements.slotsBar.style.width =
+          '0%';
 
         elements.slotsBar.className =
           'slots-bar';
@@ -1671,20 +2004,26 @@
         return;
       }
 
+
       const percentage =
         Math.min(
           100,
           Math.max(
             0,
-            (safeConnected / safeSlots) * 100
+            (safeConnected /
+              safeSlots) *
+            100
           )
         );
+
 
       const available =
         Math.max(
           0,
-          safeSlots - safeConnected
+          safeSlots -
+            safeConnected
         );
+
 
       elements.slotsBar.style.width =
         `${percentage}%`;
@@ -1692,16 +2031,32 @@
       elements.slotsBar.className =
         'slots-bar';
 
-      if (percentage >= 100) {
-        elements.slotsBar.classList.add('full');
-      } else if (percentage >= 80) {
-        elements.slotsBar.classList.add('warning');
+
+      if (
+        percentage >= 100
+      ) {
+
+        elements.slotsBar.classList.add(
+          'full'
+        );
+
+      } else if (
+        percentage >= 80
+      ) {
+
+        elements.slotsBar.classList.add(
+          'warning'
+        );
       }
+
 
       setText(
         elements.slotsPercentage,
-        `${Math.round(percentage)}%`
+        `${Math.round(
+          percentage
+        )}%`
       );
+
 
       setText(
         elements.slotsAvailable,
@@ -1714,26 +2069,40 @@
        SESSION ID
     ===================================================== */
 
-    function updateSession(sessionID) {
+    function updateSession(
+      sessionID
+    ) {
+
       const session =
         sessionID
-          ? String(sessionID).trim()
+          ? String(
+              sessionID
+            ).trim()
           : '';
 
+
       if (!session) {
-        elements.sessionId.value = '';
+
+        elements.sessionId.value =
+          '';
 
         elements.sessionId.placeholder =
           'No disponible';
 
-        elements.steamCommand.value = '';
+
+        elements.steamCommand.value =
+          '';
 
         elements.steamCommand.placeholder =
           'Session ID no disponible';
 
-        elements.copyButton.disabled = true;
 
-        elements.copyCommandButton.disabled = true;
+        elements.copyButton.disabled =
+          true;
+
+        elements.copyCommandButton.disabled =
+          true;
+
 
         elements.steamJoin.classList.remove(
           'enabled'
@@ -1743,7 +2112,9 @@
           'disabled'
         );
 
-        elements.steamJoin.href = '#';
+
+        elements.steamJoin.href =
+          '#';
 
         elements.steamJoin.setAttribute(
           'aria-disabled',
@@ -1753,20 +2124,31 @@
         return;
       }
 
-      elements.sessionId.value = session;
+
+      elements.sessionId.value =
+        session;
+
 
       const steamCommand =
-        `steam://run/270880//+connect%20${encodeURIComponent(session)}`;
+        `steam://run/270880//+connect%20${encodeURIComponent(
+          session
+        )}`;
+
 
       elements.steamCommand.value =
         steamCommand;
 
-      elements.copyButton.disabled = false;
 
-      elements.copyCommandButton.disabled = false;
+      elements.copyButton.disabled =
+        false;
+
+      elements.copyCommandButton.disabled =
+        false;
+
 
       elements.steamJoin.href =
         steamCommand;
+
 
       elements.steamJoin.classList.remove(
         'disabled'
@@ -1776,6 +2158,7 @@
         'enabled'
       );
 
+
       elements.steamJoin.setAttribute(
         'aria-disabled',
         'false'
@@ -1784,61 +2167,98 @@
 
 
     /* =====================================================
-       COPIAR AL PORTAPAPELES
+       PORTAPAPELES
     ===================================================== */
 
-    async function copyText(text) {
+    async function copyText(
+      text
+    ) {
+
       if (!text) {
         return false;
       }
 
+
       try {
+
         if (
           navigator.clipboard &&
           window.isSecureContext
         ) {
-          await navigator.clipboard.writeText(text);
+
+          await navigator.clipboard.writeText(
+            text
+          );
 
           return true;
         }
+
       } catch (error) {
-        // Continuamos con fallback.
+        // Se intenta el fallback.
       }
 
+
       try {
+
         const textarea =
-          document.createElement('textarea');
+          document.createElement(
+            'textarea'
+          );
 
-        textarea.value = text;
 
-        textarea.style.position = 'fixed';
-        textarea.style.left = '-9999px';
-        textarea.style.top = '0';
+        textarea.value =
+          text;
 
-        document.body.appendChild(textarea);
+
+        textarea.style.position =
+          'fixed';
+
+        textarea.style.left =
+          '-9999px';
+
+        textarea.style.top =
+          '0';
+
+
+        document.body.appendChild(
+          textarea
+        );
+
 
         textarea.focus();
+
         textarea.select();
 
+
         const successful =
-          document.execCommand('copy');
+          document.execCommand(
+            'copy'
+          );
+
 
         textarea.remove();
 
+
         return successful;
+
       } catch (error) {
+
         return false;
       }
     }
 
 
     async function copySessionId() {
+
       clearMessage();
+
 
       const session =
         elements.sessionId.value.trim();
 
+
       if (!session) {
+
         showMessage(
           'No hay un ID de sesión disponible.',
           'warning'
@@ -1847,15 +2267,22 @@
         return;
       }
 
+
       const copied =
-        await copyText(session);
+        await copyText(
+          session
+        );
+
 
       if (copied) {
+
         showMessage(
           'ID de sesión copiado correctamente.',
           'success'
         );
+
       } else {
+
         showMessage(
           'No se pudo copiar automáticamente.',
           'error'
@@ -1865,12 +2292,16 @@
 
 
     async function copySteamCommand() {
+
       clearMessage();
+
 
       const command =
         elements.steamCommand.value.trim();
 
+
       if (!command) {
+
         showMessage(
           'No hay un comando disponible.',
           'warning'
@@ -1879,15 +2310,22 @@
         return;
       }
 
+
       const copied =
-        await copyText(command);
+        await copyText(
+          command
+        );
+
 
       if (copied) {
+
         showMessage(
           'Comando de Steam copiado correctamente.',
           'success'
         );
+
       } else {
+
         showMessage(
           'No se pudo copiar automáticamente.',
           'error'
@@ -1897,28 +2335,35 @@
 
 
     /* =====================================================
-       RENDERIZAR DATOS
+       RENDER SERVER
     ===================================================== */
 
-    function renderServerData(data, latency) {
+    function renderServerData(
+      data,
+      latency
+    ) {
 
       const serverName =
         data.serverName ??
         'ECUASERVER +593';
 
+
       const gameName =
         data.game ??
         'American Truck Simulator';
+
 
       const serverRunning =
         normalizeBoolean(
           data.serverRunning
         );
 
+
       const players =
         normalizePlayers(
           data.connectedPlayers
         );
+
 
       const connected =
         getConnectedPlayerCount(
@@ -1926,20 +2371,21 @@
           players
         );
 
+
       const slots =
         getSlotsValue(
           data.slots
         );
 
-      /* -----------------------------------------------
-         HEADER
-      ------------------------------------------------ */
+
+      /* HEADER */
 
       setText(
         elements.serverName,
         serverName,
         'ECUASERVER +593'
       );
+
 
       setText(
         elements.gameName,
@@ -1948,11 +2394,14 @@
       );
 
 
-      /* -----------------------------------------------
-         STATUS SERVIDOR
-      ------------------------------------------------ */
+      /* SERVER */
+
+      lastServerRunning =
+        serverRunning;
+
 
       if (serverRunning) {
+
         setStatus(
           'online',
           'Servidor Online'
@@ -1963,7 +2412,9 @@
           'Online',
           'online'
         );
+
       } else {
+
         setStatus(
           'offline',
           'Servidor Offline'
@@ -1977,24 +2428,25 @@
       }
 
 
-      /* -----------------------------------------------
-         BETA
-      ------------------------------------------------ */
+      /* BETA */
 
       if (
-        normalizeBoolean(data.beta)
+        normalizeBoolean(
+          data.beta
+        )
       ) {
+
         elements.betaBadge.textContent =
           'Beta';
+
       } else {
+
         elements.betaBadge.textContent =
           '';
       }
 
 
-      /* -----------------------------------------------
-         SLOTS
-      ------------------------------------------------ */
+      /* SLOTS */
 
       renderSlots(
         connected,
@@ -2002,11 +2454,12 @@
       );
 
 
-      /* -----------------------------------------------
-         JUGADORES
-      ------------------------------------------------ */
+      /* PLAYERS */
 
-      detectPlayerChanges(players);
+      detectPlayerChanges(
+        players
+      );
+
 
       renderPlayers(
         players,
@@ -2014,9 +2467,7 @@
       );
 
 
-      /* -----------------------------------------------
-         SESSION
-      ------------------------------------------------ */
+      /* SESSION */
 
       updateSession(
         data.sessionID ??
@@ -2025,9 +2476,7 @@
       );
 
 
-      /* -----------------------------------------------
-         VERSIÓN
-      ------------------------------------------------ */
+      /* VERSION */
 
       setText(
         elements.gameVersion,
@@ -2037,9 +2486,7 @@
       );
 
 
-      /* -----------------------------------------------
-         UPTIME
-      ------------------------------------------------ */
+      /* UPTIME */
 
       setText(
         elements.apiUptime,
@@ -2049,18 +2496,21 @@
       );
 
 
-      /* -----------------------------------------------
-         LATENCIA
-      ------------------------------------------------ */
+      /* LATENCY */
 
       if (
-        Number.isFinite(latency)
+        Number.isFinite(
+          latency
+        )
       ) {
+
         setText(
           elements.apiLatency,
           `${latency} ms`
         );
+
       } else {
+
         setText(
           elements.apiLatency,
           '—'
@@ -2068,9 +2518,7 @@
       }
 
 
-      /* -----------------------------------------------
-         API
-      ------------------------------------------------ */
+      /* API */
 
       setConnectionStatus(
         elements.apiStatus,
@@ -2079,34 +2527,39 @@
       );
 
 
-      /* -----------------------------------------------
-         ESTADO GENERAL
-      ------------------------------------------------ */
+      /* ESTADO */
 
-      lastServerData = data;
+      lastServerData =
+        data;
 
-      hasReceivedData = true;
+      hasReceivedData =
+        true;
 
       lastSuccessfulUpdate =
         new Date();
 
+
       elements.updateIndicator.className =
         'update-indicator success';
+
 
       updateRelativeTime();
     }
 
 
     /* =====================================================
-       ESTADO DE ERROR
+       ERROR API
     ===================================================== */
 
-    function renderApiError(error) {
+    function renderApiError(
+      error
+    ) {
 
       console.error(
         'Error consultando /api/status:',
         error
       );
+
 
       elements.updateIndicator.className =
         'update-indicator error';
@@ -2126,11 +2579,8 @@
 
 
       /*
-       * Si ya tenemos datos anteriores,
-       * NO los borramos.
-       *
-       * Esto evita que la web desaparezca
-       * cada vez que hay un fallo temporal.
+       * Si existen datos anteriores,
+       * los conservamos.
        */
 
       if (lastServerData) {
@@ -2140,21 +2590,32 @@
           'Datos anteriores'
         );
 
+
         setText(
           elements.lastUpdate,
           lastSuccessfulUpdate
-            ? `${formatRelativeTime(lastSuccessfulUpdate)} · API sin respuesta`
+            ? `${formatRelativeTime(
+                lastSuccessfulUpdate
+              )} · API sin respuesta`
             : 'API sin respuesta'
         );
+
+
+        setConnectionStatus(
+          elements.serverConnectionStatus,
+          lastServerRunning
+            ? 'Último estado: Online'
+            : 'Último estado: Offline',
+          'warning'
+        );
+
 
         return;
       }
 
 
       /*
-       * Primer intento fallido.
-       * Aquí ya NO dejamos "Verificando..."
-       * indefinidamente.
+       * Primera consulta fallida.
        */
 
       setStatus(
@@ -2191,10 +2652,12 @@
       elements.slotsBar.style.width =
         '0%';
 
+
       setText(
         elements.slotsPercentage,
         '—'
       );
+
 
       setText(
         elements.slotsAvailable,
@@ -2204,14 +2667,20 @@
 
       elements.playersList.replaceChildren();
 
+
       const errorMessage =
-        document.createElement('div');
+        document.createElement(
+          'div'
+        );
+
 
       errorMessage.className =
         'empty-state';
 
+
       errorMessage.textContent =
         'No se pudo obtener la lista de jugadores. Reintentando...';
+
 
       elements.playersList.appendChild(
         errorMessage
@@ -2226,6 +2695,7 @@
         '-'
       );
 
+
       setText(
         elements.apiUptime,
         '-'
@@ -2238,11 +2708,6 @@
       );
 
 
-      /*
-       * Dejamos el botón disponible para
-       * que el usuario pueda reintentar.
-       */
-
       showMessage(
         'La API ATS no respondió. Se volverá a intentar automáticamente.',
         'error'
@@ -2251,41 +2716,38 @@
 
 
     /* =====================================================
-       CONSULTAR API
+       FETCH PRINCIPAL
     ===================================================== */
 
     async function fetchServerStatus() {
-
-      /*
-       * Evita dos consultas simultáneas.
-       */
 
       if (isFetching) {
         return;
       }
 
-      isFetching = true;
 
-      elements.refreshButton.disabled = true;
+      isFetching =
+        true;
 
 
-      /*
-       * Si es la primera carga mostramos Verificando.
-       * Si ya tenemos datos, no destruimos la información
-       * que el usuario está viendo.
-       */
+      elements.refreshButton.disabled =
+        true;
+
 
       if (!hasReceivedData) {
+
         setStatus(
           'warning',
           'Verificando'
         );
+
 
         setConnectionStatus(
           elements.apiStatus,
           'Verificando...',
           'warning'
         );
+
 
         setConnectionStatus(
           elements.serverConnectionStatus,
@@ -2298,10 +2760,14 @@
       const controller =
         new AbortController();
 
+
       const timeoutId =
-        setTimeout(() => {
-          controller.abort();
-        }, REQUEST_TIMEOUT);
+        setTimeout(
+          () => {
+            controller.abort();
+          },
+          REQUEST_TIMEOUT
+        );
 
 
       const startTime =
@@ -2309,12 +2775,6 @@
 
 
       try {
-
-        /*
-         * cache: no-store
-         * evita que navegador/CDN entregue
-         * una respuesta antigua.
-         */
 
         const response =
           await fetch(
@@ -2328,26 +2788,27 @@
                 Accept: 'application/json'
               },
 
-              signal: controller.signal
+              signal:
+                controller.signal
             }
           );
 
 
         const latency =
           Math.round(
-            performance.now() - startTime
+            performance.now() -
+            startTime
           );
 
 
-        clearTimeout(timeoutId);
+        clearTimeout(
+          timeoutId
+        );
 
 
         /*
-         * IMPORTANTE:
-         * fetch() NO lanza error automáticamente
-         * cuando recibe 500, 502, 504, etc.
-         *
-         * Por eso comprobamos response.ok.
+         * fetch no considera 500/502/504
+         * como excepción automáticamente.
          */
 
         if (!response.ok) {
@@ -2355,17 +2816,25 @@
           let errorMessage =
             `HTTP ${response.status}`;
 
+
           try {
+
             const errorData =
               await response.json();
 
-            if (errorData?.error) {
+
+            if (
+              errorData?.error
+            ) {
+
               errorMessage =
                 errorData.error;
             }
+
           } catch (ignored) {
-            // No pasa nada.
+            // Sin JSON de error.
           }
+
 
           throw new Error(
             errorMessage
@@ -2381,6 +2850,7 @@
           !data ||
           typeof data !== 'object'
         ) {
+
           throw new Error(
             'La API devolvió datos inválidos.'
           );
@@ -2393,50 +2863,54 @@
         );
 
 
-        /*
-         * Mensaje de error anterior ya no aplica.
-         */
-
         if (
           elements.copyMessage.classList.contains(
             'error'
           )
         ) {
+
           clearMessage();
         }
 
 
       } catch (error) {
 
-        clearTimeout(timeoutId);
+        clearTimeout(
+          timeoutId
+        );
+
 
         if (
-          error?.name === 'AbortError'
+          error?.name ===
+          'AbortError'
         ) {
+
           renderApiError(
             new Error(
               'La consulta tardó demasiado.'
             )
           );
+
         } else {
-          renderApiError(error);
+
+          renderApiError(
+            error
+          );
         }
 
       } finally {
 
-        isFetching = false;
+        isFetching =
+          false;
+
 
         elements.refreshButton.disabled =
           false;
 
+
         /*
-         * MUY IMPORTANTE:
-         *
-         * El siguiente intento se programa
-         * SIEMPRE, incluso si hubo error.
-         *
-         * Esto evita que el sistema se quede
-         * detenido después del primer fallo.
+         * El siguiente intento siempre
+         * queda programado.
          */
 
         scheduleNextRefresh();
@@ -2445,16 +2919,17 @@
 
 
     /* =====================================================
-       BOTÓN STEAM
+       STEAM
     ===================================================== */
 
     elements.steamJoin.addEventListener(
       'click',
-      function (event) {
+      function(event) {
 
         if (
           !elements.sessionId.value.trim()
         ) {
+
           event.preventDefault();
 
           showMessage(
@@ -2484,7 +2959,7 @@
 
     elements.refreshButton.addEventListener(
       'click',
-      function () {
+      function() {
 
         clearTimeout(
           refreshTimer
@@ -2496,27 +2971,34 @@
 
 
     /* =====================================================
-       ACTUALIZACIÓN RELATIVA
+       ACTUALIZACIÓN DEL TIEMPO
     ===================================================== */
 
     relativeTimer =
       setInterval(
-        updateRelativeTime,
+        () => {
+
+          updateRelativeTime();
+
+          updateDataFreshnessState();
+
+        },
         1000
       );
 
 
     /* =====================================================
-       CUANDO LA PÁGINA VUELVE A ESTAR VISIBLE
+       PÁGINA VISIBLE
     ===================================================== */
 
     document.addEventListener(
       'visibilitychange',
-      function () {
+      function() {
 
         if (
           !document.hidden
         ) {
+
           clearTimeout(
             refreshTimer
           );
@@ -2530,12 +3012,6 @@
     /* =====================================================
        INICIO
     ===================================================== */
-
-    /*
-     * Arrancamos inmediatamente.
-     *
-     * No esperamos 10 segundos para la primera consulta.
-     */
 
     fetchServerStatus();
 
