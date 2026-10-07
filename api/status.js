@@ -1,92 +1,123 @@
 export default async function handler(req, res) {
+  /*
+   * Puedes cambiar estos valores mediante variables
+   * de entorno en Vercel.
+   *
+   * Si no existen, se utilizan los valores actuales.
+   */
 
-  /* =====================================================
-     CONFIGURACIÓN
-  ===================================================== */
+  const allowedOrigin =
+    process.env.ALLOWED_ORIGIN || "*";
 
-  const ATS_API_URL =
+  const atsApiUrl =
     process.env.ATS_API_URL ||
-    'http://159.89.51.54/status';
+    "http://159.89.51.54/status";
+
+  const timeoutMs = 8000;
 
 
-  /* =====================================================
-     CABECERAS
-  ===================================================== */
+  /* =========================================
+     HEADERS
+  ========================================== */
 
   res.setHeader(
-    'Access-Control-Allow-Origin',
-    '*'
+    "Access-Control-Allow-Origin",
+    allowedOrigin
   );
 
   res.setHeader(
-    'Access-Control-Allow-Methods',
-    'GET, OPTIONS'
+    "Access-Control-Allow-Methods",
+    "GET, OPTIONS"
   );
 
   res.setHeader(
-    'Access-Control-Allow-Headers',
-    'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version'
+    "Access-Control-Allow-Headers",
+    "Accept, Content-Type"
+  );
+
+
+  /*
+   * Evita que Vercel, proxies o navegadores
+   * reutilicen una respuesta antigua.
+   */
+
+  res.setHeader(
+    "Cache-Control",
+    "no-store, no-cache, must-revalidate, proxy-revalidate"
   );
 
   res.setHeader(
-    'Cache-Control',
-    'no-store, no-cache, must-revalidate, proxy-revalidate'
+    "Pragma",
+    "no-cache"
   );
 
   res.setHeader(
-    'Pragma',
-    'no-cache'
+    "Expires",
+    "0"
+  );
+
+
+  /*
+   * Cabeceras de seguridad básicas.
+   */
+
+  res.setHeader(
+    "X-Content-Type-Options",
+    "nosniff"
   );
 
   res.setHeader(
-    'Expires',
-    '0'
-  );
-
-  res.setHeader(
-    'X-Content-Type-Options',
-    'nosniff'
-  );
-
-  res.setHeader(
-    'Referrer-Policy',
-    'strict-origin-when-cross-origin'
+    "Referrer-Policy",
+    "no-referrer"
   );
 
 
-  /* =====================================================
-     OPTIONS
-  ===================================================== */
+  if (allowedOrigin !== "*") {
 
-  if (
-    req.method === 'OPTIONS'
-  ) {
+    res.setHeader(
+      "Vary",
+      "Origin"
+    );
+
+  }
+
+
+  /* =========================================
+     CORS PREFLIGHT
+  ========================================== */
+
+  if (req.method === "OPTIONS") {
 
     res.status(204).end();
 
     return;
+
   }
 
 
-  /* =====================================================
-     MÉTODO
-  ===================================================== */
+  /* =========================================
+     SOLO GET
+  ========================================== */
 
-  if (
-    req.method !== 'GET'
-  ) {
+  if (req.method !== "GET") {
+
+    res.setHeader(
+      "Allow",
+      "GET, OPTIONS"
+    );
 
     res.status(405).json({
-      error: 'Método no permitido'
+      error: "Método no permitido"
     });
 
     return;
+
   }
 
 
-  /* =====================================================
+  /* =========================================
      TIMEOUT
-  ===================================================== */
+  ========================================== */
 
   const controller =
     new AbortController();
@@ -94,34 +125,29 @@ export default async function handler(req, res) {
 
   const timeout =
     setTimeout(
-      () => {
-        controller.abort();
-      },
-      8000
+      () => controller.abort(),
+      timeoutMs
     );
 
 
-  const startTime =
-    Date.now();
-
-
-  /* =====================================================
-     CONSULTAR ATS
-  ===================================================== */
-
   try {
+
+    /* =======================================
+       CONSULTA API ATS
+    ======================================== */
 
     const response =
       await fetch(
-        ATS_API_URL,
+        atsApiUrl,
         {
-          method: 'GET',
+          method: "GET",
 
           headers: {
-            Accept: 'application/json'
+            Accept:
+              "application/json"
           },
 
-          cache: 'no-store',
+          cache: "no-store",
 
           signal:
             controller.signal
@@ -129,156 +155,121 @@ export default async function handler(req, res) {
       );
 
 
-    const responseTime =
-      Date.now() -
-      startTime;
+    /* =======================================
+       VALIDAR HTTP
+    ======================================== */
+
+    if (!response.ok) {
+
+      throw new Error(
+        `La API ATS respondió con HTTP ${response.status}`
+      );
+
+    }
 
 
-    clearTimeout(
-      timeout
-    );
+    /* =======================================
+       VALIDAR JSON
+    ======================================== */
 
+    const contentType =
+      response.headers.get(
+        "content-type"
+      ) || "";
 
-    /* =================================================
-       ERROR HTTP
-    ================================================= */
 
     if (
-      !response.ok
+      !contentType.includes(
+        "application/json"
+      )
     ) {
 
-      res.status(502).json({
-        error:
-          'La API ATS respondió con un error',
+      throw new Error(
+        "La API ATS no devolvió JSON"
+      );
 
-        status:
-          response.status,
-
-        responseTime
-      });
-
-      return;
     }
 
 
-    /* =================================================
-       JSON
-    ================================================= */
+    /* =======================================
+       LEER DATOS
+    ======================================== */
 
-    let data;
+    const data =
+      await response.json();
 
-
-    try {
-
-      data =
-        await response.json();
-
-    } catch (jsonError) {
-
-      res.status(502).json({
-        error:
-          'La API ATS no devolvió un JSON válido',
-
-        responseTime
-      });
-
-      return;
-    }
-
-
-    /* =================================================
-       VALIDACIÓN
-    ================================================= */
-
-    if (
-      !data ||
-      typeof data !== 'object'
-    ) {
-
-      res.status(502).json({
-        error:
-          'La API ATS devolvió una respuesta inválida',
-
-        responseTime
-      });
-
-      return;
-    }
-
-
-    /* =================================================
-       RESPUESTA
-    ================================================= */
 
     /*
      * IMPORTANTE:
      *
-     * No modificamos los campos originales.
+     * No modificamos los nombres de los campos
+     * que ya utiliza tu frontend.
      *
-     * El frontend continúa utilizando:
-     *
-     * serverName
-     * game
-     * beta
-     * serverRunning
-     * connectedPlayers
-     * slots
-     * sessionID
-     * game_version
-     * apiUptime
+     * La respuesta pasa directamente.
      */
 
     res.status(200).json(
       data
     );
 
+
   } catch (error) {
+
+    console.error(
+      "ECUASERVER /api/status:",
+      error
+    );
+
+
+    const isTimeout =
+      error?.name === "AbortError";
+
+
+    const isDevelopment =
+      process.env.NODE_ENV === "development";
+
+
+    /*
+     * 504 = timeout
+     * 502 = API externa con error
+     */
+
+    res.status(
+      isTimeout
+        ? 504
+        : 502
+    ).json({
+
+      error:
+        isTimeout
+          ? "La API ATS tardó demasiado en responder"
+          : "Error al consultar la API del servidor ATS",
+
+      /*
+       * Solo mostramos el detalle técnico
+       * durante desarrollo.
+       *
+       * En producción no exponemos información
+       * innecesaria del backend.
+       */
+
+      ...(isDevelopment
+        ? {
+            detail:
+              error?.message ||
+              "Error desconocido"
+          }
+        : {})
+
+    });
+
+
+  } finally {
 
     clearTimeout(
       timeout
     );
 
-
-    const responseTime =
-      Date.now() -
-      startTime;
-
-
-    /* =================================================
-       TIMEOUT
-    ================================================= */
-
-    if (
-      error?.name ===
-      'AbortError'
-    ) {
-
-      res.status(504).json({
-        error:
-          'La API ATS tardó demasiado en responder',
-
-        responseTime
-      });
-
-      return;
-    }
-
-
-    /* =================================================
-       ERROR GENERAL
-    ================================================= */
-
-    console.error(
-      'Error consultando API ATS:',
-      error
-    );
-
-
-    res.status(502).json({
-      error:
-        'No se pudo conectar con la API del servidor ATS',
-
-      responseTime
-    });
   }
+
 }
