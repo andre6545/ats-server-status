@@ -1,0 +1,3 @@
+import { NextResponse } from 'next/server';
+import { makeSession,validPassword } from '../../../../lib/auth';
+export async function POST(req:Request){let password='';try{const b=await req.json();password=typeof b.password==='string'?b.password:''}catch{return NextResponse.json({error:'Solicitud inválida'},{status:400})}if(!validPassword(password))return NextResponse.json({error:'Contraseña incorrecta'},{status:401});const response=NextResponse.json({ok:true});response.cookies.set('ecuaserver_admin',makeSession(),{httpOnly:true,secure:process.env.NODE_ENV==='production',sameSite:'strict',path:'/',maxAge:60*60*8});return response}
