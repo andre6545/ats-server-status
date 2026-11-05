@@ -63,6 +63,8 @@ export async function PUT(req:Request){
   const imageUrl=typeof input.imageUrl==='string'?input.imageUrl.trim():'';
   const eventAt=typeof input.eventAt==='string'?input.eventAt.trim():'';
   const location=typeof input.location==='string'?input.location.trim():'';
+  const discordUrl=typeof input.discordUrl==='string'?input.discordUrl.trim():'';
+  if(discordUrl && (!/^https:\/\/(discord\.gg|discord\.com)\//.test(discordUrl)||discordUrl.length>500))return NextResponse.json({error:'Enlace de Discord inválido'},{status:400});
   if(typeof id!=='string'||!/^[0-9a-f-]{36}$/.test(id)||!title||title.length>120||!body||body.length>5000||!['noticia','anuncio','convoy'].includes(String(category))||(category==='convoy'&&!eventAt)||location.length>160||(imageUrl&&(!/^https:\/\/[^\s]+$/.test(imageUrl)||imageUrl.length>2048))||(eventAt&&(!/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}/.test(eventAt)||Number.isNaN(Date.parse(eventAt)))))return NextResponse.json({error:'Datos inválidos'},{status:400});
   try{
     const blobs=await list({prefix:prefix+id+'.json',limit:10});
