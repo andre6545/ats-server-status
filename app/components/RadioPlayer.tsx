@@ -3,7 +3,7 @@ import {useEffect,useRef,useState} from 'react';
 import {Headphones,Pause,Play,Radio,Volume2,VolumeX,X,ExternalLink} from 'lucide-react';
 import Link from 'next/link';
 
-export const RADIO_STREAM='https://stream.zeno.fm/ydqljignb0ww';
+export const RADIO_STREAM='https://stream.zeno.fm/ydqljignb0wvv';
 export const RADIO_WIDGET='https://zeno.fm/player/orbita-plus-fm';
 
 export default function RadioPlayer(){
