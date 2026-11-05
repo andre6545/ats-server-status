@@ -3,7 +3,7 @@ import { NextResponse } from 'next/server';
 import { isAdmin } from '../../../../lib/auth';
 
 export const dynamic = 'force-dynamic';
-type Post = { id:string; title:string; body:string; category:'noticia'|'anuncio'|'convoy'; createdAt:string; imageUrl?:string; eventAt?:string; location?:string };
+type Post = { id:string; title:string; body:string; category:'noticia'|'anuncio'|'convoy'; createdAt:string; imageUrl?:string; eventAt?:string; location?:string; discordUrl?:string };
 const prefix='ecuaserver-news/';
 const responseHeaders={ 'Cache-Control':'no-store' };
 async function getPosts():Promise<Post[]> {
@@ -30,10 +30,12 @@ export async function POST(req:Request){
   const imageUrl=typeof input.imageUrl==='string'?input.imageUrl.trim():'';
   const eventAt=typeof input.eventAt==='string'?input.eventAt.trim():'';
   const location=typeof input.location==='string'?input.location.trim():'';
+  const discordUrl=typeof input.discordUrl==='string'?input.discordUrl.trim():'';
+  if(discordUrl && (!/^https:\/\/(discord\.gg|discord\.com)\//.test(discordUrl)||discordUrl.length>500))return NextResponse.json({error:'Enlace de Discord inválido'},{status:400});
   if(imageUrl && (!/^https:\/\/[^\s]+$/.test(imageUrl)||imageUrl.length>2048))return NextResponse.json({error:'URL de imagen inválida'},{status:400});
   if(location.length>160 || (eventAt && (!/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}/.test(eventAt)||Number.isNaN(Date.parse(eventAt)))))return NextResponse.json({error:'Fecha o ubicación inválida'},{status:400});
   if(!title||title.length>120||!body||body.length>5000||(category!=='noticia'&&category!=='anuncio'&&category!=='convoy')||(category==='convoy'&&!eventAt))return NextResponse.json({error:'Título (1-120), texto (1-5000) y tipo son obligatorios'},{status:400});
-  const post:Post={id:crypto.randomUUID(),title,body,category,createdAt:new Date().toISOString(),...(imageUrl?{imageUrl}:{}),...(category==='convoy'?{eventAt,location}: {})};
+  const post:Post={id:crypto.randomUUID(),title,body,category,createdAt:new Date().toISOString(),...(imageUrl?{imageUrl}:{}),...(category==='convoy'?{eventAt,location,...(discordUrl?{discordUrl}:{})}: {})};
   try{
     await put(prefix+post.id+'.json',JSON.stringify(post),{access:'public',addRandomSuffix:false,contentType:'application/json'});
     return NextResponse.json({post},{status:201,headers:responseHeaders});
@@ -69,7 +71,7 @@ export async function PUT(req:Request){
     const old=await fetch(current.url+'?v='+encodeURIComponent(current.uploadedAt.toISOString()),{cache:'no-store'});
     if(!old.ok)throw Error('No se pudo leer');
     const existing=await old.json() as Post;
-    const post:Post={id,title,body,category:category as Post['category'],createdAt:existing.createdAt||new Date().toISOString(),...(imageUrl?{imageUrl}:{}),...(category==='convoy'?{eventAt,location}:{})};
+    const post:Post={id,title,body,category:category as Post['category'],createdAt:existing.createdAt||new Date().toISOString(),...(imageUrl?{imageUrl}:{}),...(category==='convoy'?{eventAt,location,...(discordUrl?{discordUrl}:{})}:{})};
     await put(prefix+id+'.json',JSON.stringify(post),{access:'public',addRandomSuffix:false,allowOverwrite:true,contentType:'application/json'});
     return NextResponse.json({post},{headers:responseHeaders});
   }catch{return NextResponse.json({error:'No se pudo actualizar'},{status:503})}
