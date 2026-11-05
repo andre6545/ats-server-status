@@ -1,7 +1,6 @@
 'use client';
 import {useEffect,useRef,useState} from 'react';
-import {Headphones,Pause,Play,Radio,Volume2,VolumeX,X,ExternalLink} from 'lucide-react';
-import Link from 'next/link';
+import {Headphones,Pause,Play,Radio,Volume2,VolumeX,X} from 'lucide-react';
 
 export const RADIO_STREAM='https://stream.zeno.fm/ydqljignb0wvv';
 export const RADIO_WIDGET='https://zeno.fm/player/orbita-plus-fm';
@@ -27,7 +26,6 @@ export default function RadioPlayer(){
       <button type="button" className="radio-play" onClick={toggle} aria-label={playing?'Pausar radio':'Reproducir radio'}>{playing?<Pause size={22} fill="currentColor"/>:<Play size={22} fill="currentColor"/>}</button>
       <button type="button" className="radio-volume-toggle" onClick={()=>setMuted(m=>!m)} aria-label={muted?'Activar sonido':'Silenciar'}>{muted?<VolumeX size={19}/>:<Volume2 size={19}/>}</button>
       <input className="radio-volume" type="range" min="0" max="1" step="0.05" value={volume} onChange={e=>setVolume(Number(e.target.value))} aria-label="Volumen de radio"/>
-      <Link className="radio-details" href="/radio">VER RADIO <ExternalLink size={14}/></Link>
       <button className="radio-collapse" type="button" onClick={()=>setCollapsed(true)} aria-label="Minimizar reproductor"><X size={18}/></button>
       {error&&<div className="radio-error" role="status">{error} <a href={RADIO_WIDGET} target="_blank" rel="noopener noreferrer">Abrir Zeno</a></div>}
     </>}
