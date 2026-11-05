@@ -1,6 +1,6 @@
 import {list,put} from '@vercel/blob';
 import {NextResponse} from 'next/server';
-import {isAdmin} from '../../../../lib/auth';
+import {isAdmin} from '../../../lib/auth';
 export const dynamic='force-dynamic';
 const headers={'Cache-Control':'no-store'};
 const validId=(s:unknown):s is string=>typeof s==='string'&&/^[0-9a-f-]{36}$/.test(s);
